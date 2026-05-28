@@ -8,12 +8,23 @@ class TestStatisticsViewTests(SimpleTestCase):
     def inertia_post(self, path: str, data: dict[str, str]):
         return self.client.post(path, data, HTTP_X_INERTIA="true")
 
-    def test_home_page_returns_exact_26_calculator_catalog(self):
+    def test_home_page_returns_section_overview(self):
         response = self.inertia_get("/")
 
         self.assertEqual(response.status_code, 200)
         payload = response.json()
         self.assertEqual(payload["component"], "Home")
+        self.assertEqual(len(payload["props"]["sections"]), 1)
+        self.assertEqual(payload["props"]["sections"][0]["slug"], "test-statistics")
+        self.assertEqual(payload["props"]["sections"][0]["href"], "/test-statistics/")
+        self.assertEqual(payload["props"]["sections"][0]["itemCount"], 26)
+
+    def test_test_statistics_index_returns_exact_26_calculator_catalog(self):
+        response = self.inertia_get("/test-statistics/")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["component"], "TestStatistics/Index")
         self.assertEqual(len(payload["props"]["catalog"]), 26)
         self.assertEqual(payload["props"]["catalog"][0]["slug"], "one-sample-z-test")
         self.assertEqual(payload["props"]["catalog"][-1]["slug"], "delong-test-paired-curves")

@@ -1,8 +1,8 @@
 import { Link } from "@inertiajs/react";
 
 const NAV_ITEMS = [
-  { label: "Home", href: "/" },
-  { label: "Test Statistics", href: "/" },
+  { label: "Home", href: "/", key: "/" },
+  { label: "Test Statistics", href: "/test-statistics/", key: "/test-statistics" },
 ];
 
 export default function SiteHeader({ currentPath = "/" }) {
@@ -14,7 +14,7 @@ export default function SiteHeader({ currentPath = "/" }) {
       <nav className="site-header__nav" aria-label="Primary navigation">
         <div className="site-header__nav-inner">
           {NAV_ITEMS.map((item) => {
-            const isActive = currentPath === item.href;
+            const isActive = currentPath === item.key;
             return (
               <Link
                 key={`${item.label}-${item.href}`}

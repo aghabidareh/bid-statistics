@@ -7,11 +7,11 @@ export default function Show({ calculator, form, result }) {
   return (
     <>
       <Head title={calculator.name} />
-      <SiteHeader currentPath="/" />
+      <SiteHeader currentPath="/test-statistics" />
       <main className="calculator-page">
         <div className="calculator-page__content">
-          <Link href="/" className="calculator-page__backlink">
-            Back to calculators
+          <Link href="/test-statistics/" className="calculator-page__backlink">
+            Back to test statistics
           </Link>
 
           <header className="calculator-page__hero">

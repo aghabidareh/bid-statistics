@@ -1,32 +1,37 @@
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import SiteHeader from "./components/SiteHeader";
-import CalculatorTable from "./components/test-statistics/CalculatorTable";
 
-export default function Home({ catalog }) {
+export default function Home({ sections }) {
   return (
     <>
-      <Head title="Test statistics calculators" />
+      <Head title="Bid Statistics" />
       <SiteHeader currentPath="/" />
       <main className="home">
         <section className="home__section">
           <div className="home__eyebrow">Bid statistics</div>
-          <h1 className="home__title">Test statistics calculators</h1>
+          <h1 className="home__title">Statistics online</h1>
           <p className="home__intro">
-            Explore the complete 26-test catalog with one shared, metadata-driven
-            workflow for parametric, nonparametric, ANOVA, survival, and ROC
-            comparison methods.
+            Browse the available sections of the statistics toolkit. Right now,
+            the live section is test statistics, and more sections can be added
+            to the same shared navigation later.
           </p>
-          <div className="home__summary">
-            <div className="home__summary-card">
-              <div className="home__summary-label">Catalog size</div>
-              <div className="home__summary-value">{catalog.length}</div>
-            </div>
-            <div className="home__summary-card">
-              <div className="home__summary-label">Delivery shape</div>
-              <div className="home__summary-value">One shared UI</div>
-            </div>
+
+          <div className="section-grid">
+            {sections.map((section) => (
+              <article key={section.slug} className="section-card">
+                <div className="section-card__eyebrow">Section</div>
+                <h2 className="section-card__title">{section.name}</h2>
+                <p className="section-card__copy">{section.description}</p>
+                <div className="section-card__meta">
+                  <div className="section-card__meta-label">Items</div>
+                  <div className="section-card__meta-value">{section.itemCount}</div>
+                </div>
+                <Link href={section.href} className="section-card__link">
+                  Open section
+                </Link>
+              </article>
+            ))}
           </div>
-          <CalculatorTable calculators={catalog} />
         </section>
       </main>
     </>

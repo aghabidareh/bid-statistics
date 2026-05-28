@@ -20,9 +20,21 @@ from test_statistics.services.validators import ValidationIssues, errors_by_fiel
 
 @require_GET
 def home(request: HttpRequest) -> HttpResponse:
+    catalog = list_calculators()
     return render(
         request,
         "Home",
+        {
+            "sections": [_build_test_statistics_section(catalog)],
+        },
+    )
+
+
+@require_GET
+def test_statistics_index(request: HttpRequest) -> HttpResponse:
+    return render(
+        request,
+        "TestStatistics/Index",
         {
             "catalog": [calculator.to_dict() for calculator in list_calculators()],
         },
@@ -85,6 +97,17 @@ def _build_show_props(
             "csrfToken": get_token(request),
         },
         "result": result,
+    }
+
+
+
+def _build_test_statistics_section(catalog) -> dict[str, object]:
+    return {
+        "slug": "test-statistics",
+        "name": "Test Statistics",
+        "description": "Run the full 26-calculator test statistics catalog from one shared workflow.",
+        "href": "/test-statistics/",
+        "itemCount": len(catalog),
     }
 
 
