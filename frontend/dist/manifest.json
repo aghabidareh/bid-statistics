@@ -1,0 +1,11 @@
+{
+  "js/main.jsx": {
+    "file": "assets/app-CB_nFv16.js",
+    "name": "app",
+    "src": "js/main.jsx",
+    "isEntry": true,
+    "css": [
+      "assets/app-x1XGuNl0.css"
+    ]
+  }
+}

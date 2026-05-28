@@ -1,0 +1,6 @@
+venv
+.env
+.venv
+node_modules
+package-lock.json
+.idea
