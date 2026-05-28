@@ -8,14 +8,17 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "django.contrib.messages",
+    "django.contrib.sessions",
     "django.contrib.staticfiles",
     "django_vite",
     "inertia",
+    "test_statistics.apps.TestStatisticsConfig",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "bid_statistics.middleware.RateLimitMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -62,6 +65,7 @@ STATICFILES_DIRS = [BASE_DIR / "frontend" / "dist"]
 
 INERTIA_LAYOUT = "base.html"
 MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 DJANGO_VITE = {
     "default": {
