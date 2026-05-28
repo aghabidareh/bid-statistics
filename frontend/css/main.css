@@ -26,10 +26,68 @@ code {
   font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.site-header__brand-bar {
+  background: #0f3c61;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  padding: 1.1rem 1.5rem;
+}
+
+.site-header__brand {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.site-header__nav {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.24);
+}
+
+.site-header__nav-inner {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  overflow-x: auto;
+}
+
+.site-header__nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 1rem;
+  color: #0f172a;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+}
+
+.site-header__nav-link:hover {
+  color: #1d4ed8;
+}
+
+.site-header__nav-link--active {
+  color: #1d4ed8;
+  border-bottom-color: #1d4ed8;
+}
+
 .home {
   display: flex;
   justify-content: center;
-  padding: 4rem 1.5rem;
+  padding: 2.5rem 1.5rem 4rem;
 }
 
 .home__section {

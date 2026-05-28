@@ -1,43 +1,55 @@
 {
   "js/main.jsx": {
-    "file": "assets/app-Cx0ejP5W.js",
+    "file": "assets/app-MSr4R2j9.js",
     "name": "app",
     "src": "js/main.jsx",
     "isEntry": true,
     "dynamicImports": [
       "pages/Home.jsx",
       "pages/TestStatistics/Show.jsx",
+      "pages/components/SiteHeader.jsx",
       "pages/components/test-statistics/CalculatorForm.jsx",
       "pages/components/test-statistics/CalculatorTable.jsx",
       "pages/components/test-statistics/ResultPanel.jsx"
     ],
     "css": [
-      "assets/app-DuuusDxd.css"
+      "assets/app-CT_l8dwz.css"
     ]
   },
   "pages/Home.jsx": {
-    "file": "assets/Home-CVtcgfrK.js",
+    "file": "assets/Home-BTLnhWea.js",
     "name": "Home",
     "src": "pages/Home.jsx",
     "isDynamicEntry": true,
     "imports": [
       "js/main.jsx",
+      "pages/components/SiteHeader.jsx",
       "pages/components/test-statistics/CalculatorTable.jsx"
     ]
   },
   "pages/TestStatistics/Show.jsx": {
-    "file": "assets/Show-BOwBsapu.js",
+    "file": "assets/Show-BCIviLGV.js",
     "name": "Show",
     "src": "pages/TestStatistics/Show.jsx",
     "isDynamicEntry": true,
     "imports": [
       "js/main.jsx",
+      "pages/components/SiteHeader.jsx",
       "pages/components/test-statistics/CalculatorForm.jsx",
       "pages/components/test-statistics/ResultPanel.jsx"
     ]
   },
+  "pages/components/SiteHeader.jsx": {
+    "file": "assets/SiteHeader-_FoJL-7a.js",
+    "name": "SiteHeader",
+    "src": "pages/components/SiteHeader.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "js/main.jsx"
+    ]
+  },
   "pages/components/test-statistics/CalculatorForm.jsx": {
-    "file": "assets/CalculatorForm-BYaw7Bqg.js",
+    "file": "assets/CalculatorForm-CIXFyfq7.js",
     "name": "CalculatorForm",
     "src": "pages/components/test-statistics/CalculatorForm.jsx",
     "isDynamicEntry": true,
@@ -46,7 +58,7 @@
     ]
   },
   "pages/components/test-statistics/CalculatorTable.jsx": {
-    "file": "assets/CalculatorTable-nT4obIaY.js",
+    "file": "assets/CalculatorTable-5D7NZ47h.js",
     "name": "CalculatorTable",
     "src": "pages/components/test-statistics/CalculatorTable.jsx",
     "isDynamicEntry": true,
@@ -55,7 +67,7 @@
     ]
   },
   "pages/components/test-statistics/ResultPanel.jsx": {
-    "file": "assets/ResultPanel-ndg_CxaV.js",
+    "file": "assets/ResultPanel-8G9AkM6V.js",
     "name": "ResultPanel",
     "src": "pages/components/test-statistics/ResultPanel.jsx",
     "isDynamicEntry": true,

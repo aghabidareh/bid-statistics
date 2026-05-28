@@ -1,4 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
+import SiteHeader from "../components/SiteHeader";
 import CalculatorForm from "../components/test-statistics/CalculatorForm";
 import ResultPanel from "../components/test-statistics/ResultPanel";
 
@@ -6,6 +7,7 @@ export default function Show({ calculator, form, result }) {
   return (
     <>
       <Head title={calculator.name} />
+      <SiteHeader currentPath="/" />
       <main className="calculator-page">
         <div className="calculator-page__content">
           <Link href="/" className="calculator-page__backlink">

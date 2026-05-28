@@ -1,10 +1,12 @@
 import { Head } from "@inertiajs/react";
+import SiteHeader from "./components/SiteHeader";
 import CalculatorTable from "./components/test-statistics/CalculatorTable";
 
 export default function Home({ catalog }) {
   return (
     <>
       <Head title="Test statistics calculators" />
+      <SiteHeader currentPath="/" />
       <main className="home">
         <section className="home__section">
           <div className="home__eyebrow">Bid statistics</div>
