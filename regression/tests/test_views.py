@@ -67,6 +67,8 @@ class RegressionViewTests(SimpleTestCase):
         payload = response.json()
         self.assertEqual(payload["component"], "Regression/Show")
         self.assertEqual(payload["props"]["calculator"]["slug"], "simple-linear-regression")
+        self.assertIsInstance(payload["props"]["form"]["values"]["dataset"], dict)
+        self.assertEqual(payload["props"]["form"]["values"]["dataset"]["rows"][-1]["cells"][1], "")
         self.assertEqual(payload["props"]["result"]["statisticName"], "R²")
         self.assertEqual(payload["props"]["result"]["tables"][1]["title"], "Predicted rows")
         self.assertEqual(payload["props"]["result"]["dataset"]["rows"][-1]["cells"][1], "65")

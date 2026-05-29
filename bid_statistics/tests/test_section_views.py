@@ -41,6 +41,25 @@ class SectionViewsTests(SimpleTestCase):
 
         self.assertEqual(data, {"x": "1"})
 
+    def test_get_request_data_parses_dataset_json_from_standard_post(self):
+        request = self.factory.post(
+            "/regression/fake/calculate/",
+            data={
+                "dataset": json.dumps({
+                    "columns": [{"key": "column_1", "label": "x", "role": "predictor"}],
+                    "rows": [{"cells": ["1"]}],
+                    "sourceMode": "grid",
+                    "filename": "",
+                }),
+                "csrfmiddlewaretoken": "token",
+            },
+        )
+
+        data = section_views.get_request_data(request)
+
+        self.assertIsInstance(data["dataset"], dict)
+        self.assertEqual(data["dataset"]["rows"][0]["cells"], ["1"])
+
     def test_build_section_uses_catalog_length(self):
         calculators = [SimpleNamespace(), SimpleNamespace(), SimpleNamespace()]
 

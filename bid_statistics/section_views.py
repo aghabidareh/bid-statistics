@@ -119,7 +119,19 @@ def get_request_data(request: HttpRequest) -> dict[str, Any]:
     if request.headers.get("Content-Type", "").startswith("application/json") and request.body:
         payload = json.loads(request.body)
         return {key: normalize_request_value(value) for key, value in payload.items()}
-    return {key: value for key, value in request.POST.items() if key != "csrfmiddlewaretoken"}
+
+    data: dict[str, Any] = {}
+    for key, value in request.POST.items():
+        if key == "csrfmiddlewaretoken":
+            continue
+        if key == "dataset":
+            try:
+                data[key] = json.loads(value)
+                continue
+            except json.JSONDecodeError:
+                pass
+        data[key] = value
+    return data
 
 
 
