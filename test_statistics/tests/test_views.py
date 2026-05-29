@@ -1,7 +1,16 @@
+from django.core.cache import cache
 from django.test import SimpleTestCase
 
 
 class TestStatisticsViewTests(SimpleTestCase):
+    def setUp(self):
+        super().setUp()
+        cache.clear()
+
+    def tearDown(self):
+        cache.clear()
+        super().tearDown()
+
     def inertia_get(self, path: str):
         return self.client.get(path, HTTP_X_INERTIA="true")
 

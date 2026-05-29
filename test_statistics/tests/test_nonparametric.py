@@ -55,3 +55,17 @@ class NonparametricCalculatorTests(SimpleTestCase):
 
         self.assertAlmostEqual(result.statistic.raw, 8.0)
         self.assertAlmostEqual(result.p_value.raw, 0.018315638888734182)
+
+    def test_paired_wilcoxon_adds_warning_when_zero_differences_exist(self):
+        result = calculate_test_statistic(
+            "paired-wilcoxon-signed-rank-test",
+            {
+                "sample_a": "10, 10, 12, 14",
+                "sample_b": "10, 9, 12, 10",
+                "alternative": "two-sided",
+                "alpha": "0.05",
+            },
+        )
+
+        self.assertEqual(len(result.warnings), 1)
+        self.assertIn("Zero paired differences", result.warnings[0])

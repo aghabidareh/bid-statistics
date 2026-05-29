@@ -58,3 +58,49 @@ class DistributionCalculatorTests(SimpleTestCase):
 
         self.assertAlmostEqual(result.statistic.raw, 0.2)
         self.assertAlmostEqual(result.p_value.raw, 1.0)
+
+    def test_goodness_of_fit_warns_for_small_expected_counts(self):
+        result = calculate_test_statistic(
+            "chi-squared-goodness-of-fit-test",
+            {
+                "observed": "4, 6",
+                "expected": "5, 5",
+                "alpha": "0.05",
+            },
+        )
+
+        self.assertEqual(len(result.warnings), 0)
+
+        result_small_expected = calculate_test_statistic(
+            "chi-squared-goodness-of-fit-test",
+            {
+                "observed": "2, 8",
+                "expected": "1, 9",
+                "alpha": "0.05",
+            },
+        )
+        self.assertEqual(len(result_small_expected.warnings), 1)
+
+    def test_ks_calculators_include_statistic_location_notes(self):
+        one_sample = calculate_test_statistic(
+            "one-sample-kolmogorov-smirnov-test",
+            {
+                "sample": "-0.5, 0.1, 0.2, 0.8, 1.1",
+                "distribution": "norm",
+                "distribution_parameters": "0, 1",
+                "alternative": "two-sided",
+                "alpha": "0.05",
+            },
+        )
+        self.assertGreaterEqual(len(one_sample.notes), 1)
+
+        two_sample = calculate_test_statistic(
+            "two-sample-kolmogorov-smirnov-test",
+            {
+                "sample_a": "1, 2, 3, 4, 5",
+                "sample_b": "10, 11, 12, 13, 14",
+                "alternative": "two-sided",
+                "alpha": "0.05",
+            },
+        )
+        self.assertGreaterEqual(len(two_sample.notes), 1)
