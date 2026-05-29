@@ -11,9 +11,10 @@ export default function Home({ sections }) {
           <div className="home__eyebrow">Bid statistics</div>
           <h1 className="home__title">Statistics online</h1>
           <p className="home__intro">
-            Browse the available sections of the statistics toolkit. Right now,
-            the live section is test statistics, and more sections can be added
-            to the same shared navigation later.
+            Browse the available sections of the statistics toolkit. Test
+            statistics keeps the existing 26-calculator workflow, while
+            regression adds spreadsheet-style modeling, prediction rows, and
+            matching tools.
           </p>
 
           <div className="section-grid">

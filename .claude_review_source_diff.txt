@@ -1,0 +1,2572 @@
+diff --git a/frontend/css/main.css b/frontend/css/main.css
+index 2a4079b..7d91417 100644
+--- a/frontend/css/main.css
++++ b/frontend/css/main.css
+@@ -446,6 +446,133 @@ code {
+   filter: brightness(1.05);
+ }
+ 
++.regression-form {
++  gap: 1rem;
++}
++
++.regression-form__actions,
++.editable-grid__toolbar-actions {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 0.75rem;
++}
++
++.regression-form__secondary-button,
++.editable-grid__button {
++  border: 1px solid #cbd5e1;
++  border-radius: 999px;
++  padding: 0.8rem 1.1rem;
++  background: #fff;
++  color: #0f172a;
++  font: inherit;
++  font-weight: 600;
++  cursor: pointer;
++}
++
++.regression-form__secondary-button:hover,
++.editable-grid__button:hover {
++  border-color: #818cf8;
++  color: #312e81;
++}
++
++.regression-form__file-input {
++  display: none;
++}
++
++.regression-form__source {
++  font-size: 0.92rem;
++  color: #475569;
++}
++
++.editable-grid {
++  display: grid;
++  gap: 1rem;
++}
++
++.editable-grid__toolbar {
++  display: flex;
++  justify-content: space-between;
++  align-items: flex-start;
++  gap: 1rem;
++}
++
++.editable-grid__toolbar-copy {
++  color: #475569;
++  font-size: 0.92rem;
++  max-width: 32rem;
++}
++
++.editable-grid__errors,
++.editable-grid__column-errors,
++.editable-grid__cell-errors {
++  margin-top: 0.25rem;
++}
++
++.editable-grid__scroll {
++  overflow-x: auto;
++  border: 1px solid #e2e8f0;
++  border-radius: 16px;
++  background: #fff;
++}
++
++.editable-grid__table {
++  width: 100%;
++  min-width: 820px;
++  border-collapse: collapse;
++}
++
++.editable-grid__head,
++.editable-grid__cell,
++.editable-grid__index {
++  padding: 0.75rem;
++  vertical-align: top;
++  border-bottom: 1px solid #e5e7eb;
++}
++
++.editable-grid__head {
++  background: #f8fafc;
++  text-align: left;
++}
++
++.editable-grid__head--index,
++.editable-grid__index {
++  width: 60px;
++  font-weight: 700;
++  color: #4338ca;
++}
++
++.editable-grid__column-header {
++  display: grid;
++  gap: 0.5rem;
++}
++
++.editable-grid__column-input,
++.editable-grid__role-select,
++.editable-grid__cell-input {
++  width: 100%;
++  border: 1px solid #cbd5e1;
++  border-radius: 10px;
++  padding: 0.7rem 0.8rem;
++  background: #fff;
++  color: #111827;
++  font: inherit;
++}
++
++.editable-grid__column-input:focus,
++.editable-grid__role-select:focus,
++.editable-grid__cell-input:focus {
++  outline: 2px solid #818cf8;
++  outline-offset: 2px;
++  border-color: #818cf8;
++}
++
++.editable-grid__column-input--error,
++.editable-grid__role-select--error,
++.editable-grid__cell-input--error {
++  border-color: #dc2626;
++  background: #fff7f7;
++}
++
+ .result-panel__hero-metrics {
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+   margin-top: 1.5rem;
+@@ -513,6 +640,14 @@ code {
+   margin-top: 0.75rem;
+ }
+ 
++.result-panel__dataset-role {
++  margin-top: 0.2rem;
++  font-size: 0.78rem;
++  color: #64748b;
++  text-transform: uppercase;
++  letter-spacing: 0.04em;
++}
++
+ .result-panel__message-block--warnings {
+   background: #fff7ed;
+   color: #9a3412;
+@@ -533,6 +668,10 @@ code {
+     grid-template-columns: 1fr;
+   }
+ 
++  .editable-grid__toolbar {
++    flex-direction: column;
++  }
++
+   .home__section,
+   .calculator-page__summary-card,
+   .calculator-page__detail-card,
+diff --git a/frontend/pages/Home.jsx b/frontend/pages/Home.jsx
+index 504826b..4cbfcb1 100644
+--- a/frontend/pages/Home.jsx
++++ b/frontend/pages/Home.jsx
+@@ -11,9 +11,10 @@ export default function Home({ sections }) {
+           <div className="home__eyebrow">Bid statistics</div>
+           <h1 className="home__title">Statistics online</h1>
+           <p className="home__intro">
+-            Browse the available sections of the statistics toolkit. Right now,
+-            the live section is test statistics, and more sections can be added
+-            to the same shared navigation later.
++            Browse the available sections of the statistics toolkit. Test
++            statistics keeps the existing 26-calculator workflow, while
++            regression adds spreadsheet-style modeling, prediction rows, and
++            matching tools.
+           </p>
+ 
+           <div className="section-grid">
+diff --git a/frontend/pages/components/SiteHeader.jsx b/frontend/pages/components/SiteHeader.jsx
+index ee6b686..28a83b0 100644
+--- a/frontend/pages/components/SiteHeader.jsx
++++ b/frontend/pages/components/SiteHeader.jsx
+@@ -3,6 +3,7 @@ import { Link } from "@inertiajs/react";
+ const NAV_ITEMS = [
+   { label: "Home", href: "/", key: "/" },
+   { label: "Test Statistics", href: "/test-statistics/", key: "/test-statistics" },
++  { label: "Regression", href: "/regression/", key: "/regression" },
+ ];
+ 
+ export default function SiteHeader({ currentPath = "/" }) {
+diff --git a/test_statistics/domain/enums.py b/test_statistics/domain/enums.py
+index 5304bba..91a8b18 100644
+--- a/test_statistics/domain/enums.py
++++ b/test_statistics/domain/enums.py
+@@ -12,6 +12,9 @@ class TestFamily(str, Enum):
+     SURVIVAL = "Survival analysis"
+     ROC = "ROC comparison"
+     CORRELATION = "Correlation"
++    REGRESSION = "Regression"
++    CLASSIFICATION = "Classification"
++    CAUSAL_INFERENCE = "Causal inference"
+ 
+ 
+ class InputKind(str, Enum):
+@@ -22,6 +25,20 @@ class InputKind(str, Enum):
+     RADIO = "radio"
+ 
+ 
++class WorkflowKind(str, Enum):
++    FORM = "form"
++    DATASET = "dataset"
++
++
++class DatasetColumnRole(str, Enum):
++    PREDICTOR = "predictor"
++    TARGET = "target"
++    TREATMENT = "treatment"
++    OUTCOME = "outcome"
++    ID = "id"
++    UNUSED = "unused"
++
++
+ class AlternativeHypothesis(str, Enum):
+     TWO_SIDED = "two-sided"
+     GREATER = "greater"
+diff --git a/test_statistics/domain/metadata.py b/test_statistics/domain/metadata.py
+index fc295d0..afe404d 100644
+--- a/test_statistics/domain/metadata.py
++++ b/test_statistics/domain/metadata.py
+@@ -1,8 +1,10 @@
+ from __future__ import annotations
+ 
++from collections.abc import Mapping
+ from dataclasses import dataclass, field
++from typing import Any
+ 
+-from test_statistics.domain.enums import InputKind, TestFamily
++from test_statistics.domain.enums import InputKind, TestFamily, WorkflowKind
+ 
+ 
+ @dataclass(frozen=True)
+@@ -58,10 +60,17 @@ class CalculatorMetadata:
+     assumptions: tuple[str, ...]
+     required_sample_data: tuple[str, ...]
+     input_fields: tuple[InputFieldDefinition, ...] = field(default_factory=tuple)
++    section_slug: str = "test-statistics"
++    workflow_kind: WorkflowKind = WorkflowKind.FORM
++    dataset_schema: Mapping[str, Any] | None = None
++    extra_default_values: Mapping[str, Any] = field(default_factory=dict)
+ 
+     @property
+-    def default_values(self) -> dict[str, str]:
+-        return {input_field.name: input_field.default_value for input_field in self.input_fields}
++    def default_values(self) -> dict[str, Any]:
++        return {
++            **{input_field.name: input_field.default_value for input_field in self.input_fields},
++            **dict(self.extra_default_values),
++        }
+ 
+     def to_dict(self) -> dict[str, object]:
+         return {
+@@ -76,4 +85,7 @@ class CalculatorMetadata:
+             "requiredSampleData": list(self.required_sample_data),
+             "inputFields": [input_field.to_dict() for input_field in self.input_fields],
+             "defaultValues": self.default_values,
++            "sectionSlug": self.section_slug,
++            "workflowKind": self.workflow_kind.value,
++            "datasetSchema": dict(self.dataset_schema) if self.dataset_schema is not None else None,
+         }
+diff --git a/test_statistics/domain/results.py b/test_statistics/domain/results.py
+index 84732de..bb83c74 100644
+--- a/test_statistics/domain/results.py
++++ b/test_statistics/domain/results.py
+@@ -1,5 +1,6 @@
+ from __future__ import annotations
+ 
++from collections.abc import Mapping
+ from dataclasses import dataclass, field
+ from typing import Any
+ 
+@@ -106,6 +107,7 @@ class CalculationResult:
+     interpretation: str = ""
+     warnings: tuple[str, ...] = field(default_factory=tuple)
+     notes: tuple[str, ...] = field(default_factory=tuple)
++    dataset: Mapping[str, Any] | None = None
+ 
+     def to_dict(self) -> dict[str, Any]:
+         return {
+@@ -121,6 +123,7 @@ class CalculationResult:
+             "interpretation": self.interpretation,
+             "warnings": list(self.warnings),
+             "notes": list(self.notes),
++            "dataset": dict(self.dataset) if self.dataset is not None else None,
+         }
+ 
+ 
+diff --git a/test_statistics/services/calculators/__init__.py b/test_statistics/services/calculators/__init__.py
+index f1c3c8a..839251c 100644
+--- a/test_statistics/services/calculators/__init__.py
++++ b/test_statistics/services/calculators/__init__.py
+@@ -1,10 +1,11 @@
+-from test_statistics.services.calculators import anova, distribution_tests, nonparametric, proportions, roc, survival, t_tests, variances
++from test_statistics.services.calculators import anova, distribution_tests, nonparametric, proportions, regression, roc, survival, t_tests, variances
+ 
+ __all__ = [
+     "anova",
+     "distribution_tests",
+     "nonparametric",
+     "proportions",
++    "regression",
+     "roc",
+     "survival",
+     "t_tests",
+diff --git a/test_statistics/services/calculators/base.py b/test_statistics/services/calculators/base.py
+index 78bde9b..6bfd444 100644
+--- a/test_statistics/services/calculators/base.py
++++ b/test_statistics/services/calculators/base.py
+@@ -7,8 +7,10 @@ from typing import Any, ClassVar
+ 
+ from test_statistics.domain.enums import AlternativeHypothesis, InputKind
+ from test_statistics.domain.metadata import CalculatorMetadata, FormOption, InputFieldDefinition
++from test_statistics.domain.regression_inputs import RegressionDataset
+ from test_statistics.domain.results import CalculationResult
+-from test_statistics.services.validators import ValidationIssues
++from test_statistics.services.regression_validators import parse_regression_dataset
++from test_statistics.services.validators import ValidationIssues, raise_if_issues
+ 
+ ALTERNATIVE_OPTIONS = (
+     FormOption(label="Two-sided", value=AlternativeHypothesis.TWO_SIDED.value),
+@@ -67,13 +69,23 @@ class BaseCalculator(ABC):
+         return calculator_type.instance()
+ 
+     @classmethod
+-    def all_calculators(cls) -> tuple[BaseCalculator, ...]:
+-        calculator_types = sorted(cls._registry.values(), key=lambda calculator_type: calculator_type.metadata.catalog_position)
+-        return tuple(calculator_type.instance() for calculator_type in calculator_types)
++    def all_calculators(cls, section_slug: str | None = None) -> tuple[BaseCalculator, ...]:
++        calculator_types = cls._registry.values()
++        if section_slug is not None:
++            calculator_types = (calculator_type for calculator_type in calculator_types if calculator_type.metadata.section_slug == section_slug)
++        ordered_types = sorted(
++            calculator_types,
++            key=lambda calculator_type: (
++                calculator_type.metadata.section_slug,
++                calculator_type.metadata.catalog_position,
++                calculator_type.metadata.slug,
++            ),
++        )
++        return tuple(calculator_type.instance() for calculator_type in ordered_types)
+ 
+     @classmethod
+-    def all_metadata(cls) -> tuple[CalculatorMetadata, ...]:
+-        return tuple(calculator.metadata for calculator in cls.all_calculators())
++    def all_metadata(cls, section_slug: str | None = None) -> tuple[CalculatorMetadata, ...]:
++        return tuple(calculator.metadata for calculator in cls.all_calculators(section_slug=section_slug))
+ 
+     @classmethod
+     def run_for_slug(cls, slug: str, raw_data: Mapping[str, Any]) -> CalculationResult:
+@@ -91,7 +103,7 @@ class BaseCalculator(ABC):
+         normalized_input = self.normalize(raw_data)
+         return self.calculate_result(normalized_input)
+ 
+-    def default_values(self) -> dict[str, str]:
++    def default_values(self) -> dict[str, Any]:
+         return self.metadata.default_values
+ 
+ 
+@@ -127,6 +139,15 @@ class MultivariateCalculator(BaseCalculator, ABC, register=False):
+     pass
+ 
+ 
++class RegressionCalculator(BaseCalculator, ABC, register=False):
++    def parse_dataset(self, raw_data: Mapping[str, Any], field: str = "dataset") -> RegressionDataset:
++        dataset, issues = parse_regression_dataset(raw_data.get(field), field=field)
++        raise_if_issues(issues)
++        assert dataset is not None
++        return dataset
++
++
++
+ def alpha_field(*, default_value: str = "0.05", help_text: str = "Set the significance level.") -> InputFieldDefinition:
+     return InputFieldDefinition(
+         name="alpha",
+@@ -220,6 +241,7 @@ __all__ = [
+     "MultivariateCalculator",
+     "NamedGroupCalculator",
+     "PairedSampleCalculator",
++    "RegressionCalculator",
+     "RocComparisonCalculator",
+     "SingleSampleCalculator",
+     "SurvivalCalculator",
+diff --git a/test_statistics/services/calculators/registry.py b/test_statistics/services/calculators/registry.py
+index 6a5650c..5ee1b99 100644
+--- a/test_statistics/services/calculators/registry.py
++++ b/test_statistics/services/calculators/registry.py
+@@ -10,9 +10,17 @@ from test_statistics.services.calculators.base import BaseCalculator
+ 
+ _ = _calculator_modules
+ 
++DEFAULT_SECTION_SLUG = "test-statistics"
+ 
+-def list_calculators() -> tuple[CalculatorMetadata, ...]:
+-    return BaseCalculator.all_metadata()
++
++
++def list_calculators(*, section_slug: str = DEFAULT_SECTION_SLUG) -> tuple[CalculatorMetadata, ...]:
++    return BaseCalculator.all_metadata(section_slug=section_slug)
++
++
++
++def list_all_calculators() -> tuple[CalculatorMetadata, ...]:
++    return BaseCalculator.all_metadata(section_slug=None)
+ 
+ 
+ 
+diff --git a/test_statistics/tests/test_registry.py b/test_statistics/tests/test_registry.py
+index a7e41e3..b972115 100644
+--- a/test_statistics/tests/test_registry.py
++++ b/test_statistics/tests/test_registry.py
+@@ -49,6 +49,18 @@ class CalculatorRegistryTests(SimpleTestCase):
+ 
+         self.assertEqual(calculator.metadata.name, "Two Sample T-Test (Welch's)")
+ 
++    def test_regression_catalog_can_be_listed_by_section(self):
++        calculators = list_calculators(section_slug="regression")
++
++        self.assertEqual([calculator.slug for calculator in calculators], [
++            "simple-linear-regression",
++            "multiple-linear-regression",
++            "bulk-linear-regression",
++            "binary-logistic-regression",
++            "multinomial-logistic-regression",
++            "propensity-score-matching",
++        ])
++
+     def test_unknown_slug_raises_lookup_error(self):
+         with self.assertRaises(UnknownCalculatorError):
+             get_calculator("missing-calculator")
+diff --git a/test_statistics/tests/test_views.py b/test_statistics/tests/test_views.py
+index 187c267..9991c1c 100644
+--- a/test_statistics/tests/test_views.py
++++ b/test_statistics/tests/test_views.py
+@@ -1,3 +1,5 @@
++import json
++
+ from django.test import SimpleTestCase
+ 
+ 
+@@ -8,16 +10,19 @@ class TestStatisticsViewTests(SimpleTestCase):
+     def inertia_post(self, path: str, data: dict[str, str]):
+         return self.client.post(path, data, HTTP_X_INERTIA="true")
+ 
+-    def test_home_page_returns_section_overview(self):
++    def test_home_page_returns_both_section_overviews(self):
+         response = self.inertia_get("/")
+ 
+         self.assertEqual(response.status_code, 200)
+         payload = response.json()
+         self.assertEqual(payload["component"], "Home")
+-        self.assertEqual(len(payload["props"]["sections"]), 1)
++        self.assertEqual(len(payload["props"]["sections"]), 2)
+         self.assertEqual(payload["props"]["sections"][0]["slug"], "test-statistics")
+         self.assertEqual(payload["props"]["sections"][0]["href"], "/test-statistics/")
+         self.assertEqual(payload["props"]["sections"][0]["itemCount"], 26)
++        self.assertEqual(payload["props"]["sections"][1]["slug"], "regression")
++        self.assertEqual(payload["props"]["sections"][1]["href"], "/regression/")
++        self.assertEqual(payload["props"]["sections"][1]["itemCount"], 6)
+ 
+     def test_test_statistics_index_returns_exact_26_calculator_catalog(self):
+         response = self.inertia_get("/test-statistics/")
+@@ -29,6 +34,16 @@ class TestStatisticsViewTests(SimpleTestCase):
+         self.assertEqual(payload["props"]["catalog"][0]["slug"], "one-sample-z-test")
+         self.assertEqual(payload["props"]["catalog"][-1]["slug"], "delong-test-paired-curves")
+ 
++    def test_regression_index_returns_six_calculator_catalog(self):
++        response = self.inertia_get("/regression/")
++
++        self.assertEqual(response.status_code, 200)
++        payload = response.json()
++        self.assertEqual(payload["component"], "Regression/Index")
++        self.assertEqual(len(payload["props"]["catalog"]), 6)
++        self.assertEqual(payload["props"]["catalog"][0]["slug"], "simple-linear-regression")
++        self.assertEqual(payload["props"]["catalog"][-1]["slug"], "propensity-score-matching")
++
+     def test_calculator_page_returns_metadata_and_defaults(self):
+         response = self.inertia_get("/test-statistics/one-sample-z-test/")
+ 
+@@ -40,6 +55,18 @@ class TestStatisticsViewTests(SimpleTestCase):
+         self.assertEqual(payload["props"]["form"]["values"]["alternative"], "two-sided")
+         self.assertIsNone(payload["props"]["result"])
+ 
++    def test_regression_show_page_returns_dataset_defaults(self):
++        response = self.inertia_get("/regression/simple-linear-regression/")
++
++        self.assertEqual(response.status_code, 200)
++        payload = response.json()
++        self.assertEqual(payload["component"], "Regression/Show")
++        self.assertEqual(payload["props"]["calculator"]["slug"], "simple-linear-regression")
++        self.assertEqual(payload["props"]["calculator"]["workflowKind"], "dataset")
++        self.assertEqual(len(payload["props"]["form"]["values"]["dataset"]["columns"]), 2)
++        self.assertEqual(payload["props"]["form"]["values"]["dataset"]["columns"][1]["role"], "target")
++        self.assertIsNone(payload["props"]["result"])
++
+     def test_valid_calculation_post_returns_structured_result_props(self):
+         response = self.inertia_post(
+             "/test-statistics/kaplan-meier-survival-analysis/calculate/",
+@@ -57,6 +84,36 @@ class TestStatisticsViewTests(SimpleTestCase):
+         self.assertIsNone(payload["props"]["result"]["pValue"])
+         self.assertEqual(len(payload["props"]["result"]["tables"]), 2)
+ 
++    def test_regression_calculate_returns_structured_prediction_result(self):
++        dataset = {
++            "columns": [
++                {"key": "column_1", "label": "Hours studied", "role": "predictor"},
++                {"key": "column_2", "label": "Exam score", "role": "target"},
++            ],
++            "rows": [
++                {"cells": ["1", "15"]},
++                {"cells": ["2", "25"]},
++                {"cells": ["3", "35"]},
++                {"cells": ["4", "45"]},
++                {"cells": ["5", "55"]},
++                {"cells": ["6", ""]},
++            ],
++            "sourceMode": "grid",
++            "filename": "",
++        }
++        response = self.inertia_post(
++            "/regression/simple-linear-regression/calculate/",
++            {"dataset": json.dumps(dataset)},
++        )
++
++        self.assertEqual(response.status_code, 200)
++        payload = response.json()
++        self.assertEqual(payload["component"], "Regression/Show")
++        self.assertEqual(payload["props"]["calculator"]["slug"], "simple-linear-regression")
++        self.assertEqual(payload["props"]["result"]["statisticName"], "R²")
++        self.assertEqual(payload["props"]["result"]["tables"][1]["title"], "Predicted rows")
++        self.assertEqual(payload["props"]["result"]["dataset"]["rows"][-1]["cells"][1], "65")
++
+     def test_invalid_calculation_post_returns_structured_validation_errors(self):
+         response = self.inertia_post(
+             "/test-statistics/paired-t-test/calculate/",
+@@ -76,6 +133,40 @@ class TestStatisticsViewTests(SimpleTestCase):
+         )
+         self.assertIsNone(payload["props"]["result"])
+ 
++    def test_regression_validation_errors_are_row_aware(self):
++        dataset = {
++            "columns": [
++                {"key": "column_1", "label": "Age", "role": "predictor"},
++                {"key": "column_2", "label": "Income", "role": "predictor"},
++                {"key": "column_3", "label": "Subscribed", "role": "target"},
++            ],
++            "rows": [
++                {"cells": ["24", "35", "No"]},
++                {"cells": ["29", "bad", "Yes"]},
++                {"cells": ["31", "44", ""]},
++            ],
++            "sourceMode": "grid",
++            "filename": "",
++        }
++        response = self.inertia_post(
++            "/regression/binary-logistic-regression/calculate/",
++            {"dataset": json.dumps(dataset)},
++        )
++
++        self.assertEqual(response.status_code, 200)
++        payload = response.json()
++        self.assertEqual(
++            payload["props"]["form"]["errors"],
++            {
++                "dataset.rows.1.cells.1": ["Income must be numeric on row 2."],
++                "dataset.rows": [
++                    "Provide at least 4 training row(s) with a filled target value.",
++                    "Subscribed must contain at least 2 classes in the training rows.",
++                ],
++            },
++        )
++        self.assertIsNone(payload["props"]["result"])
++
+     def test_unknown_calculator_returns_not_found(self):
+         response = self.inertia_get("/test-statistics/not-a-real-calculator/")
+ 
+diff --git a/test_statistics/urls.py b/test_statistics/urls.py
+index 744e3d3..0e79189 100644
+--- a/test_statistics/urls.py
++++ b/test_statistics/urls.py
+@@ -9,4 +9,7 @@ urlpatterns = [
+     path("test-statistics/", views.test_statistics_index, name="index"),
+     path("test-statistics/<slug:slug>/", views.show, name="show"),
+     path("test-statistics/<slug:slug>/calculate/", views.calculate, name="calculate"),
++    path("regression/", views.regression_index, name="regression-index"),
++    path("regression/<slug:slug>/", views.regression_show, name="regression-show"),
++    path("regression/<slug:slug>/calculate/", views.regression_calculate, name="regression-calculate"),
+ ]
+diff --git a/test_statistics/views.py b/test_statistics/views.py
+index ec76cd2..b286741 100644
+--- a/test_statistics/views.py
++++ b/test_statistics/views.py
+@@ -10,53 +10,92 @@ from django.views.decorators.http import require_GET, require_POST
+ from inertia import render
+ 
+ from test_statistics.services.calculators.base import UnknownCalculatorError
+-from test_statistics.services.calculators.registry import (
+-    calculate_test_statistic,
+-    get_calculator_metadata,
+-    list_calculators,
+-)
++from test_statistics.services.calculators.registry import calculate_test_statistic, get_calculator_metadata, list_calculators
+ from test_statistics.services.validators import ValidationIssues, errors_by_field
+ 
++SECTION_CONFIG = {
++    "test-statistics": {
++        "name": "Test Statistics",
++        "description": "Run the full 26-calculator test statistics catalog from one shared workflow.",
++        "href": "/test-statistics/",
++        "index_component": "TestStatistics/Index",
++        "show_component": "TestStatistics/Show",
++    },
++    "regression": {
++        "name": "Regression",
++        "description": "Fit regression, classification, and matching workflows with spreadsheet-style data entry and prediction rows.",
++        "href": "/regression/",
++        "index_component": "Regression/Index",
++        "show_component": "Regression/Show",
++    },
++}
++
+ 
+ @require_GET
+ def home(request: HttpRequest) -> HttpResponse:
+-    catalog = list_calculators()
+     return render(
+         request,
+         "Home",
+         {
+-            "sections": [_build_test_statistics_section(catalog)],
++            "sections": [_build_section(section_slug) for section_slug in ("test-statistics", "regression")],
+         },
+     )
+ 
+ 
+ @require_GET
+ def test_statistics_index(request: HttpRequest) -> HttpResponse:
+-    return render(
+-        request,
+-        "TestStatistics/Index",
+-        {
+-            "catalog": [calculator.to_dict() for calculator in list_calculators()],
+-        },
+-    )
++    return _render_catalog(request, section_slug="test-statistics")
++
++
++@require_GET
++def regression_index(request: HttpRequest) -> HttpResponse:
++    return _render_catalog(request, section_slug="regression")
+ 
+ 
+ @require_GET
+ def show(request: HttpRequest, slug: str) -> HttpResponse:
+-    metadata = _get_metadata_or_404(slug)
+-    return render(request, "TestStatistics/Show", _build_show_props(request, metadata))
++    metadata = _get_metadata_or_404(slug, section_slug="test-statistics")
++    return render(request, SECTION_CONFIG[metadata.section_slug]["show_component"], _build_show_props(request, metadata))
++
++
++@require_GET
++def regression_show(request: HttpRequest, slug: str) -> HttpResponse:
++    metadata = _get_metadata_or_404(slug, section_slug="regression")
++    return render(request, SECTION_CONFIG[metadata.section_slug]["show_component"], _build_show_props(request, metadata))
+ 
+ 
+ @require_POST
+ def calculate(request: HttpRequest, slug: str) -> HttpResponse:
+-    metadata = _get_metadata_or_404(slug)
++    metadata = _get_metadata_or_404(slug, section_slug="test-statistics")
++    return _calculate_and_render(request, metadata)
++
++
++@require_POST
++def regression_calculate(request: HttpRequest, slug: str) -> HttpResponse:
++    metadata = _get_metadata_or_404(slug, section_slug="regression")
++    return _calculate_and_render(request, metadata)
++
++
++
++def _render_catalog(request: HttpRequest, *, section_slug: str) -> HttpResponse:
++    return render(
++        request,
++        SECTION_CONFIG[section_slug]["index_component"],
++        {
++            "catalog": [calculator.to_dict() for calculator in list_calculators(section_slug=section_slug)],
++        },
++    )
++
++
++
++def _calculate_and_render(request: HttpRequest, metadata) -> HttpResponse:
+     form_values = {
+         **metadata.default_values,
+         **_get_request_data(request),
+     }
+ 
+     try:
+-        result = calculate_test_statistic(slug, form_values)
++        result = calculate_test_statistic(metadata.slug, form_values)
+         errors: dict[str, list[str]] = {}
+     except ValidationIssues as error:
+         result = None
+@@ -64,7 +103,7 @@ def calculate(request: HttpRequest, slug: str) -> HttpResponse:
+ 
+     return render(
+         request,
+-        "TestStatistics/Show",
++        SECTION_CONFIG[metadata.section_slug]["show_component"],
+         _build_show_props(
+             request,
+             metadata,
+@@ -91,7 +130,7 @@ def _build_show_props(
+     return {
+         "calculator": metadata.to_dict(),
+         "form": {
+-            "action": f"/test-statistics/{metadata.slug}/calculate/",
++            "action": f"/{metadata.section_slug}/{metadata.slug}/calculate/",
+             "values": merged_form_values,
+             "errors": dict(validation_errors or {}),
+             "csrfToken": get_token(request),
+@@ -101,27 +140,41 @@ def _build_show_props(
+ 
+ 
+ 
+-def _build_test_statistics_section(catalog) -> dict[str, object]:
++def _build_section(section_slug: str) -> dict[str, object]:
++    config = SECTION_CONFIG[section_slug]
++    catalog = list_calculators(section_slug=section_slug)
+     return {
+-        "slug": "test-statistics",
+-        "name": "Test Statistics",
+-        "description": "Run the full 26-calculator test statistics catalog from one shared workflow.",
+-        "href": "/test-statistics/",
++        "slug": section_slug,
++        "name": config["name"],
++        "description": config["description"],
++        "href": config["href"],
+         "itemCount": len(catalog),
+     }
+ 
+ 
+ 
+-def _get_request_data(request: HttpRequest) -> dict[str, str]:
++def _normalize_request_value(value: Any) -> Any:
++    if value is None:
++        return ""
++    if isinstance(value, (str, int, float, bool, list, dict)):
++        return value
++    return str(value)
++
++
++
++def _get_request_data(request: HttpRequest) -> dict[str, Any]:
+     if request.headers.get("Content-Type", "").startswith("application/json") and request.body:
+         payload = json.loads(request.body)
+-        return {key: "" if value is None else str(value) for key, value in payload.items()}
++        return {key: _normalize_request_value(value) for key, value in payload.items()}
+     return {key: value for key, value in request.POST.items() if key != "csrfmiddlewaretoken"}
+ 
+ 
+ 
+-def _get_metadata_or_404(slug: str):
++def _get_metadata_or_404(slug: str, *, section_slug: str):
+     try:
+-        return get_calculator_metadata(slug)
++        metadata = get_calculator_metadata(slug)
+     except UnknownCalculatorError as error:
+         raise Http404("Calculator not found.") from error
++    if metadata.section_slug != section_slug:
++        raise Http404("Calculator not found.")
++    return metadata
+
+--- /dev/null
++++ test_statistics/domain/regression_inputs.py
+@@ -0,0 +1,130 @@
++from __future__ import annotations
++
++from dataclasses import dataclass, field, replace
++from typing import Any
++
++import pandas as pd
++
++from test_statistics.domain.enums import DatasetColumnRole
++
++
++@dataclass(frozen=True)
++class RegressionColumn:
++    key: str
++    label: str
++    role: DatasetColumnRole = DatasetColumnRole.PREDICTOR
++
++    def to_dict(self) -> dict[str, str]:
++        return {
++            "key": self.key,
++            "label": self.label,
++            "role": self.role.value,
++        }
++
++
++@dataclass(frozen=True)
++class RegressionRow:
++    cells: tuple[str, ...]
++
++    def to_dict(self) -> dict[str, list[str]]:
++        return {"cells": list(self.cells)}
++
++
++@dataclass(frozen=True)
++class RegressionDataset:
++    columns: tuple[RegressionColumn, ...]
++    rows: tuple[RegressionRow, ...]
++    source_mode: str = "grid"
++    filename: str = ""
++
++    def to_dict(self) -> dict[str, object]:
++        return {
++            "columns": [column.to_dict() for column in self.columns],
++            "rows": [row.to_dict() for row in self.rows],
++            "sourceMode": self.source_mode,
++            "filename": self.filename,
++        }
++
++    @classmethod
++    def from_dict(cls, payload: dict[str, Any]) -> RegressionDataset:
++        return cls(
++            columns=tuple(
++                RegressionColumn(
++                    key=str(column.get("key") or f"column_{index + 1}"),
++                    label=str(column.get("label") or "").strip(),
++                    role=DatasetColumnRole(str(column.get("role") or DatasetColumnRole.PREDICTOR.value)),
++                )
++                for index, column in enumerate(payload.get("columns", []))
++            ),
++            rows=tuple(
++                RegressionRow(cells=tuple("" if cell is None else str(cell).strip() for cell in row.get("cells", [])))
++                for row in payload.get("rows", [])
++            ),
++            source_mode=str(payload.get("sourceMode") or "grid"),
++            filename=str(payload.get("filename") or ""),
++        )
++
++    def with_filled_cells(self, replacements: dict[tuple[int, int], str]) -> RegressionDataset:
++        updated_rows = []
++        for row_index, row in enumerate(self.rows):
++            updated_cells = []
++            for column_index, cell in enumerate(row.cells):
++                updated_cells.append(replacements.get((row_index, column_index), cell))
++            updated_rows.append(RegressionRow(cells=tuple(updated_cells)))
++        return replace(self, rows=tuple(updated_rows))
++
++
++@dataclass(frozen=True)
++class PredictionRowResult:
++    row_number: int
++    values: tuple[str, ...]
++
++    def to_table_row(self) -> tuple[str, ...]:
++        return (str(self.row_number), *self.values)
++
++
++@dataclass(frozen=True)
++class MatchingPairResult:
++    treated_id: str
++    control_id: str
++    treated_score: float
++    control_score: float
++    distance: float
++    treated_outcome: float
++    control_outcome: float
++
++    def to_table_row(self) -> tuple[str, ...]:
++        return (
++            self.treated_id,
++            self.control_id,
++            f"{self.treated_score:.6g}",
++            f"{self.control_score:.6g}",
++            f"{self.distance:.6g}",
++            f"{self.treated_outcome:.6g}",
++            f"{self.control_outcome:.6g}",
++            f"{(self.treated_outcome - self.control_outcome):.6g}",
++        )
++
++
++@dataclass(frozen=True)
++class PreparedRegressionDataset:
++    dataset: RegressionDataset
++    predictor_columns: tuple[RegressionColumn, ...]
++    target_column: RegressionColumn
++    id_column: RegressionColumn | None
++    training_frame: pd.DataFrame
++    prediction_frame: pd.DataFrame
++    training_row_indices: tuple[int, ...]
++    prediction_row_indices: tuple[int, ...]
++    warnings: tuple[str, ...] = field(default_factory=tuple)
++
++
++@dataclass(frozen=True)
++class PreparedMatchingDataset:
++    dataset: RegressionDataset
++    predictor_columns: tuple[RegressionColumn, ...]
++    treatment_column: RegressionColumn
++    outcome_column: RegressionColumn
++    id_column: RegressionColumn | None
++    dataframe: pd.DataFrame
++    warnings: tuple[str, ...] = field(default_factory=tuple)
+
+--- /dev/null
++++ test_statistics/services/calculators/regression.py
+@@ -0,0 +1,938 @@
++from __future__ import annotations
++
++from collections import Counter
++from collections.abc import Mapping
++import warnings as python_warnings
++from typing import Any
++
++import numpy as np
++from sklearn.exceptions import ConvergenceWarning
++from sklearn.linear_model import LinearRegression, LogisticRegression
++from sklearn.metrics import accuracy_score, log_loss, mean_squared_error, r2_score
++from sklearn.neighbors import NearestNeighbors
++
++from test_statistics.domain.enums import DatasetColumnRole, TestFamily, WorkflowKind
++from test_statistics.domain.metadata import CalculatorMetadata
++from test_statistics.domain.regression_inputs import MatchingPairResult, PredictionRowResult, PreparedMatchingDataset, PreparedRegressionDataset, RegressionColumn, RegressionDataset, RegressionRow
++from test_statistics.domain.results import CalculationResult, DisplayValue, ResultMetric, ResultSection, ResultTable, display_number, format_number
++from test_statistics.services.calculators.base import RegressionCalculator
++from test_statistics.services.regression_validators import prepare_matching_dataset, prepare_supervised_dataset
++
++
++ROLE_LABELS = {
++    DatasetColumnRole.PREDICTOR: "Predictor",
++    DatasetColumnRole.TARGET: "Target",
++    DatasetColumnRole.TREATMENT: "Treatment",
++    DatasetColumnRole.OUTCOME: "Outcome",
++    DatasetColumnRole.ID: "ID",
++    DatasetColumnRole.UNUSED: "Unused",
++}
++
++
++
++def _dataset(columns: list[tuple[str, DatasetColumnRole]], rows: list[list[str]]) -> dict[str, object]:
++    return RegressionDataset(
++        columns=tuple(
++            RegressionColumn(key=f"column_{index + 1}", label=label, role=role)
++            for index, (label, role) in enumerate(columns)
++        ),
++        rows=tuple(RegressionRow(cells=tuple(row)) for row in rows),
++    ).to_dict()
++
++
++
++def _blank_like(dataset: dict[str, object], *, rows: int) -> dict[str, object]:
++    columns = dataset["columns"]
++    return {
++        "columns": columns,
++        "rows": [{"cells": ["" for _ in columns]} for _ in range(rows)],
++        "sourceMode": "grid",
++        "filename": "",
++    }
++
++
++
++def _role_options(*roles: DatasetColumnRole) -> list[dict[str, str]]:
++    return [{"value": role.value, "label": ROLE_LABELS[role]} for role in roles]
++
++
++
++def _schema(
++    *,
++    default_dataset: dict[str, object],
++    example_dataset: dict[str, object],
++    blank_dataset: dict[str, object],
++    role_options: list[dict[str, str]],
++    allow_add_columns: bool,
++    import_hint: str,
++) -> dict[str, object]:
++    return {
++        "defaultDataset": default_dataset,
++        "exampleDataset": example_dataset,
++        "blankDataset": blank_dataset,
++        "roleOptions": role_options,
++        "allowAddColumns": allow_add_columns,
++        "importHint": import_hint,
++    }
++
++
++SIMPLE_LINEAR_EXAMPLE = _dataset(
++    [("Hours studied", DatasetColumnRole.PREDICTOR), ("Exam score", DatasetColumnRole.TARGET)],
++    [
++        ["1", "52"],
++        ["2", "56"],
++        ["3", "61"],
++        ["4", "67"],
++        ["5", "72"],
++        ["6", "78"],
++        ["7", ""],
++        ["8", ""],
++    ],
++)
++MULTIPLE_LINEAR_EXAMPLE = _dataset(
++    [
++        ("TV spend", DatasetColumnRole.PREDICTOR),
++        ("Search spend", DatasetColumnRole.PREDICTOR),
++        ("Social spend", DatasetColumnRole.PREDICTOR),
++        ("Revenue", DatasetColumnRole.TARGET),
++    ],
++    [
++        ["10", "4", "2", "110"],
++        ["12", "5", "3", "121"],
++        ["15", "6", "4", "138"],
++        ["18", "7", "5", "151"],
++        ["20", "8", "6", "165"],
++        ["22", "9", "7", ""],
++        ["24", "10", "8", ""],
++    ],
++)
++BULK_LINEAR_EXAMPLE = _dataset(
++    [
++        ("Square footage", DatasetColumnRole.PREDICTOR),
++        ("Bedrooms", DatasetColumnRole.PREDICTOR),
++        ("Bathrooms", DatasetColumnRole.PREDICTOR),
++        ("Sale price", DatasetColumnRole.TARGET),
++    ],
++    [
++        ["900", "2", "1", "180"],
++        ["1100", "2", "2", "215"],
++        ["1400", "3", "2", "260"],
++        ["1600", "3", "2", "295"],
++        ["1850", "4", "3", "340"],
++        ["2000", "4", "3", ""],
++        ["2200", "4", "3", ""],
++        ["2500", "5", "4", ""],
++    ],
++)
++BINARY_LOGISTIC_EXAMPLE = _dataset(
++    [
++        ("Age", DatasetColumnRole.PREDICTOR),
++        ("Income", DatasetColumnRole.PREDICTOR),
++        ("Subscribed", DatasetColumnRole.TARGET),
++    ],
++    [
++        ["24", "35", "No"],
++        ["29", "40", "No"],
++        ["35", "50", "Yes"],
++        ["42", "62", "Yes"],
++        ["48", "70", "Yes"],
++        ["31", "44", "No"],
++        ["38", "58", "Yes"],
++        ["33", "47", ""],
++        ["45", "68", ""],
++    ],
++)
++MULTINOMIAL_LOGISTIC_EXAMPLE = _dataset(
++    [
++        ("Tenure", DatasetColumnRole.PREDICTOR),
++        ("Usage", DatasetColumnRole.PREDICTOR),
++        ("Plan", DatasetColumnRole.TARGET),
++    ],
++    [
++        ["2", "10", "Basic"],
++        ["4", "18", "Basic"],
++        ["8", "30", "Standard"],
++        ["10", "36", "Standard"],
++        ["15", "55", "Premium"],
++        ["18", "63", "Premium"],
++        ["12", "41", "Standard"],
++        ["6", "22", ""],
++        ["16", "58", ""],
++    ],
++)
++PSM_EXAMPLE = _dataset(
++    [
++        ("Record ID", DatasetColumnRole.ID),
++        ("Age", DatasetColumnRole.PREDICTOR),
++        ("Risk score", DatasetColumnRole.PREDICTOR),
++        ("Treatment", DatasetColumnRole.TREATMENT),
++        ("Outcome", DatasetColumnRole.OUTCOME),
++    ],
++    [
++        ["T1", "44", "0.82", "Treated", "78"],
++        ["T2", "39", "0.74", "Treated", "73"],
++        ["T3", "47", "0.91", "Treated", "81"],
++        ["T4", "41", "0.69", "Treated", "76"],
++        ["C1", "43", "0.80", "Control", "69"],
++        ["C2", "37", "0.71", "Control", "68"],
++        ["C3", "49", "0.89", "Control", "72"],
++        ["C4", "40", "0.67", "Control", "70"],
++    ],
++)
++
++SIMPLE_LINEAR_SCHEMA = _schema(
++    default_dataset=SIMPLE_LINEAR_EXAMPLE,
++    example_dataset=SIMPLE_LINEAR_EXAMPLE,
++    blank_dataset=_blank_like(SIMPLE_LINEAR_EXAMPLE, rows=6),
++    role_options=_role_options(DatasetColumnRole.PREDICTOR, DatasetColumnRole.TARGET, DatasetColumnRole.ID, DatasetColumnRole.UNUSED),
++    allow_add_columns=True,
++    import_hint="Paste or import two columns: one predictor and one target. Leave the target blank on rows you want predicted.",
++)
++MULTIPLE_LINEAR_SCHEMA = _schema(
++    default_dataset=MULTIPLE_LINEAR_EXAMPLE,
++    example_dataset=MULTIPLE_LINEAR_EXAMPLE,
++    blank_dataset=_blank_like(MULTIPLE_LINEAR_EXAMPLE, rows=6),
++    role_options=_role_options(DatasetColumnRole.PREDICTOR, DatasetColumnRole.TARGET, DatasetColumnRole.ID, DatasetColumnRole.UNUSED),
++    allow_add_columns=True,
++    import_hint="Paste or import one target column plus two or more numeric predictor columns. Leave the target blank on rows to predict.",
++)
++BULK_LINEAR_SCHEMA = _schema(
++    default_dataset=BULK_LINEAR_EXAMPLE,
++    example_dataset=BULK_LINEAR_EXAMPLE,
++    blank_dataset=_blank_like(BULK_LINEAR_EXAMPLE, rows=8),
++    role_options=_role_options(DatasetColumnRole.PREDICTOR, DatasetColumnRole.TARGET, DatasetColumnRole.ID, DatasetColumnRole.UNUSED),
++    allow_add_columns=True,
++    import_hint="Train one linear model on completed rows, then predict many blank target rows in the same sheet.",
++)
++BINARY_LOGISTIC_SCHEMA = _schema(
++    default_dataset=BINARY_LOGISTIC_EXAMPLE,
++    example_dataset=BINARY_LOGISTIC_EXAMPLE,
++    blank_dataset=_blank_like(BINARY_LOGISTIC_EXAMPLE, rows=7),
++    role_options=_role_options(DatasetColumnRole.PREDICTOR, DatasetColumnRole.TARGET, DatasetColumnRole.ID, DatasetColumnRole.UNUSED),
++    allow_add_columns=True,
++    import_hint="Use numeric predictors and a two-class target. Leave the target blank on rows that need predicted classes and probabilities.",
++)
++MULTINOMIAL_LOGISTIC_SCHEMA = _schema(
++    default_dataset=MULTINOMIAL_LOGISTIC_EXAMPLE,
++    example_dataset=MULTINOMIAL_LOGISTIC_EXAMPLE,
++    blank_dataset=_blank_like(MULTINOMIAL_LOGISTIC_EXAMPLE, rows=7),
++    role_options=_role_options(DatasetColumnRole.PREDICTOR, DatasetColumnRole.TARGET, DatasetColumnRole.ID, DatasetColumnRole.UNUSED),
++    allow_add_columns=True,
++    import_hint="Use numeric predictors and a target with three or more classes. Leave target cells blank on rows to classify.",
++)
++PSM_SCHEMA = _schema(
++    default_dataset=PSM_EXAMPLE,
++    example_dataset=PSM_EXAMPLE,
++    blank_dataset=_blank_like(PSM_EXAMPLE, rows=8),
++    role_options=_role_options(DatasetColumnRole.ID, DatasetColumnRole.PREDICTOR, DatasetColumnRole.TREATMENT, DatasetColumnRole.OUTCOME, DatasetColumnRole.UNUSED),
++    allow_add_columns=True,
++    import_hint="Include predictors, exactly one treatment column, exactly one outcome column, and an optional ID column for matched-pair output.",
++)
++
++
++
++def _capture_fit_warnings(fit_callable) -> tuple[Any, tuple[str, ...]]:
++    with python_warnings.catch_warnings(record=True) as records:
++        python_warnings.simplefilter("always", ConvergenceWarning)
++        fitted = fit_callable()
++    warnings = tuple(str(record.message) for record in records if issubclass(record.category, ConvergenceWarning))
++    return fitted, warnings
++
++
++
++def _dataset_value(dataset: RegressionDataset, row_index: int, column_index: int) -> str:
++    return dataset.rows[row_index].cells[column_index]
++
++
++
++def _filled_dataset(prepared: PreparedRegressionDataset, predicted_values: np.ndarray) -> dict[str, object]:
++    target_index = prepared.dataset.columns.index(prepared.target_column)
++    replacements = {
++        (row_index, target_index): format_number(float(predicted_value))
++        for row_index, predicted_value in zip(prepared.prediction_row_indices, predicted_values, strict=True)
++    }
++    return prepared.dataset.with_filled_cells(replacements).to_dict()
++
++
++
++def _filled_dataset_with_labels(prepared: PreparedRegressionDataset, predicted_labels: np.ndarray) -> dict[str, object]:
++    target_index = prepared.dataset.columns.index(prepared.target_column)
++    replacements = {
++        (row_index, target_index): str(predicted_label)
++        for row_index, predicted_label in zip(prepared.prediction_row_indices, predicted_labels, strict=True)
++    }
++    return prepared.dataset.with_filled_cells(replacements).to_dict()
++
++
++
++def _prediction_table(prepared: PreparedRegressionDataset, predicted_values: np.ndarray) -> ResultTable | None:
++    if not prepared.prediction_row_indices:
++        return None
++    rows = []
++    target_index = prepared.dataset.columns.index(prepared.target_column)
++    for row_index, predicted_value in zip(prepared.prediction_row_indices, predicted_values, strict=True):
++        original_cells = list(prepared.dataset.rows[row_index].cells)
++        original_cells[target_index] = format_number(float(predicted_value))
++        rows.append(PredictionRowResult(row_number=row_index + 1, values=tuple(original_cells)).to_table_row())
++    return ResultTable(
++        title="Predicted rows",
++        columns=("Row", *(column.label for column in prepared.dataset.columns)),
++        rows=tuple(rows),
++        caption="Rows with blank target cells are filled after the model is fitted on the completed training rows.",
++    )
++
++
++
++def _classification_prediction_table(
++    prepared: PreparedRegressionDataset,
++    predicted_labels: np.ndarray,
++    predicted_probabilities: np.ndarray,
++    classes: np.ndarray,
++) -> ResultTable | None:
++    if not prepared.prediction_row_indices:
++        return None
++
++    rows: list[tuple[str, ...]] = []
++    target_index = prepared.dataset.columns.index(prepared.target_column)
++    for row_index, predicted_label, probability_row in zip(
++        prepared.prediction_row_indices,
++        predicted_labels,
++        predicted_probabilities,
++        strict=True,
++    ):
++        original_cells = list(prepared.dataset.rows[row_index].cells)
++        original_cells[target_index] = str(predicted_label)
++        probability_cells = tuple(format_number(float(probability)) for probability in probability_row)
++        rows.append(PredictionRowResult(row_number=row_index + 1, values=tuple((*original_cells, *probability_cells))).to_table_row())
++
++    return ResultTable(
++        title="Predicted rows",
++        columns=(
++            "Row",
++            *(column.label for column in prepared.dataset.columns),
++            *(f"P({class_label})" for class_label in classes),
++        ),
++        rows=tuple(rows),
++        caption="Blank target rows are classified after fitting the model on the labeled training rows.",
++    )
++
++
++
++def _linear_coefficients_table(prepared: PreparedRegressionDataset, model: LinearRegression) -> ResultTable:
++    rows = [("Intercept", format_number(float(model.intercept_)))]
++    rows.extend(
++        (column.label, format_number(float(coefficient)))
++        for column, coefficient in zip(prepared.predictor_columns, model.coef_, strict=True)
++    )
++    return ResultTable(
++        title="Coefficients",
++        columns=("Term", "Coefficient"),
++        rows=tuple(rows),
++    )
++
++
++
++def _logistic_coefficients_table(prepared: PreparedRegressionDataset, model: LogisticRegression) -> ResultTable:
++    if len(model.classes_) == 2:
++        positive_class = str(model.classes_[1])
++        rows = [(positive_class, "Intercept", format_number(float(model.intercept_[0])), format_number(float(np.exp(model.intercept_[0]))))]
++        rows.extend(
++            (
++                positive_class,
++                column.label,
++                format_number(float(coefficient)),
++                format_number(float(np.exp(coefficient))),
++            )
++            for column, coefficient in zip(prepared.predictor_columns, model.coef_[0], strict=True)
++        )
++    else:
++        rows = []
++        for class_label, intercept, coefficients in zip(model.classes_, model.intercept_, model.coef_, strict=True):
++            rows.append((str(class_label), "Intercept", format_number(float(intercept)), format_number(float(np.exp(intercept)))))
++            rows.extend(
++                (
++                    str(class_label),
++                    column.label,
++                    format_number(float(coefficient)),
++                    format_number(float(np.exp(coefficient))),
++                )
++                for column, coefficient in zip(prepared.predictor_columns, coefficients, strict=True)
++            )
++    return ResultTable(
++        title="Coefficients",
++        columns=("Class", "Term", "Log-odds coefficient", "Odds ratio"),
++        rows=tuple(rows),
++    )
++
++
++
++def _class_balance_warning(prepared: PreparedRegressionDataset) -> tuple[str, ...]:
++    counts = Counter(str(value) for value in prepared.training_frame[prepared.target_column.key])
++    total = sum(counts.values())
++    if not counts or total == 0:
++        return ()
++    minority_share = min(counts.values()) / total
++    if minority_share < 0.2:
++        return ("Training classes are imbalanced, so probability estimates may be unstable.",)
++    return ()
++
++
++
++def _select_treated_and_control_labels(values: np.ndarray) -> tuple[str, str]:
++    labels = [str(value) for value in values]
++    lower_map = {label.casefold(): label for label in labels}
++    for preferred in ("treated", "treatment", "yes", "1"):
++        if preferred in lower_map:
++            treated = lower_map[preferred]
++            control = next(label for label in labels if label != treated)
++            return treated, control
++    ordered = sorted(labels)
++    return ordered[-1], ordered[0]
++
++
++
++def _standardized_mean_difference(treated: np.ndarray, control: np.ndarray) -> float:
++    treated_mean = float(np.mean(treated))
++    control_mean = float(np.mean(control))
++    treated_var = float(np.var(treated, ddof=1)) if len(treated) > 1 else 0.0
++    control_var = float(np.var(control, ddof=1)) if len(control) > 1 else 0.0
++    pooled = np.sqrt((treated_var + control_var) / 2)
++    if pooled == 0:
++        return 0.0
++    return (treated_mean - control_mean) / pooled
++
++
++
++def _balance_table(prepared: PreparedMatchingDataset, treated_frame, control_frame, matched_pairs: tuple[MatchingPairResult, ...]) -> ResultTable:
++    rows = []
++    if matched_pairs:
++        matched_treated_ids = [pair.treated_id for pair in matched_pairs]
++        matched_control_ids = [pair.control_id for pair in matched_pairs]
++        matched_treated = treated_frame[treated_frame["__row_id__"].isin(matched_treated_ids)]
++        matched_control = control_frame[control_frame["__row_id__"].isin(matched_control_ids)]
++    else:
++        matched_treated = treated_frame.iloc[0:0]
++        matched_control = control_frame.iloc[0:0]
++
++    for predictor_column in prepared.predictor_columns:
++        before = _standardized_mean_difference(
++            treated_frame[predictor_column.key].to_numpy(dtype=float),
++            control_frame[predictor_column.key].to_numpy(dtype=float),
++        )
++        after = _standardized_mean_difference(
++            matched_treated[predictor_column.key].to_numpy(dtype=float) if not matched_treated.empty else np.array([0.0]),
++            matched_control[predictor_column.key].to_numpy(dtype=float) if not matched_control.empty else np.array([0.0]),
++        )
++        rows.append((predictor_column.label, format_number(before), format_number(after)))
++
++    return ResultTable(
++        title="Balance summary",
++        columns=("Predictor", "SMD before matching", "SMD after matching"),
++        rows=tuple(rows),
++        caption="Standardized mean differences closer to 0 indicate better balance between treatment groups.",
++    )
++
++
++class SimpleLinearRegressionCalculator(RegressionCalculator):
++    metadata = CalculatorMetadata(
++        catalog_position=1,
++        slug="simple-linear-regression",
++        name="Simple Linear Regression",
++        family=TestFamily.REGRESSION,
++        description="Fit one linear predictor to a numeric outcome and fill blank target rows with predicted values.",
++        check="How strongly one numeric predictor explains a continuous target and what values the fitted line predicts for blank target rows.",
++        statistic_formula="ŷ = β₀ + β₁x",
++        assumptions=(
++            "The predictor and target have an approximately linear relationship.",
++            "Training rows are independent of each other.",
++            "The target is continuous and measured on a comparable scale.",
++        ),
++        required_sample_data=(
++            "Exactly one predictor column and one target column.",
++            "At least three completed training rows.",
++            "Optional blank target rows for prediction.",
++        ),
++        section_slug="regression",
++        workflow_kind=WorkflowKind.DATASET,
++        dataset_schema=SIMPLE_LINEAR_SCHEMA,
++        extra_default_values={"dataset": SIMPLE_LINEAR_SCHEMA["defaultDataset"]},
++    )
++
++    def normalize(self, raw_data: Mapping[str, Any]) -> PreparedRegressionDataset:
++        dataset = self.parse_dataset(raw_data)
++        return prepare_supervised_dataset(
++            dataset,
++            min_training_rows=3,
++            min_predictor_columns=1,
++            max_predictor_columns=1,
++            target_kind="numeric",
++        )
++
++    def calculate_result(self, normalized_input: PreparedRegressionDataset) -> CalculationResult:
++        predictor_key = normalized_input.predictor_columns[0].key
++        target_key = normalized_input.target_column.key
++        X_train = normalized_input.training_frame[[predictor_key]].to_numpy(dtype=float)
++        y_train = normalized_input.training_frame[target_key].to_numpy(dtype=float)
++        model = LinearRegression().fit(X_train, y_train)
++        train_predictions = model.predict(X_train)
++        r_squared = float(r2_score(y_train, train_predictions))
++        rmse = float(np.sqrt(mean_squared_error(y_train, train_predictions)))
++        prediction_table = None
++        result_dataset = None
++        if not normalized_input.prediction_frame.empty:
++            X_predict = normalized_input.prediction_frame[[predictor_key]].to_numpy(dtype=float)
++            predicted_values = model.predict(X_predict)
++            prediction_table = _prediction_table(normalized_input, predicted_values)
++            result_dataset = _filled_dataset(normalized_input, predicted_values)
++
++        tables = (_linear_coefficients_table(normalized_input, model),)
++        if prediction_table is not None:
++            tables += (prediction_table,)
++
++        return CalculationResult(
++            slug=self.metadata.slug,
++            test_name=self.metadata.name,
++            statistic_name="R²",
++            statistic=display_number(r_squared),
++            metrics=(
++                ResultMetric("Training rows", str(len(normalized_input.training_row_indices))),
++                ResultMetric("Prediction rows", str(len(normalized_input.prediction_row_indices))),
++                ResultMetric("RMSE", format_number(rmse), emphasis=True),
++                ResultMetric("Intercept", format_number(float(model.intercept_))),
++            ),
++            tables=tables,
++            interpretation="The fitted line summarizes the linear relationship between the predictor and the continuous target, then fills any blank target rows with predicted values.",
++            warnings=normalized_input.warnings,
++            notes=("Rows with blank target cells are excluded from model fitting and used only for prediction.",),
++            dataset=result_dataset,
++        )
++
++
++class MultipleLinearRegressionCalculator(RegressionCalculator):
++    metadata = CalculatorMetadata(
++        catalog_position=2,
++        slug="multiple-linear-regression",
++        name="Multiple Linear Regression",
++        family=TestFamily.REGRESSION,
++        description="Fit several numeric predictors to one continuous target and fill blank target rows after training.",
++        check="How multiple numeric predictors jointly explain a continuous target and what they predict for incomplete rows.",
++        statistic_formula="ŷ = β₀ + β₁x₁ + β₂x₂ + … + βₖxₖ",
++        assumptions=(
++            "Predictors relate approximately linearly to the target.",
++            "Training rows are independent.",
++            "Predictors are numeric and measured consistently across rows.",
++        ),
++        required_sample_data=(
++            "Two or more predictor columns and one target column.",
++            "At least four completed training rows.",
++            "Optional blank target rows for prediction.",
++        ),
++        section_slug="regression",
++        workflow_kind=WorkflowKind.DATASET,
++        dataset_schema=MULTIPLE_LINEAR_SCHEMA,
++        extra_default_values={"dataset": MULTIPLE_LINEAR_SCHEMA["defaultDataset"]},
++    )
++
++    def normalize(self, raw_data: Mapping[str, Any]) -> PreparedRegressionDataset:
++        dataset = self.parse_dataset(raw_data)
++        return prepare_supervised_dataset(
++            dataset,
++            min_training_rows=4,
++            min_predictor_columns=2,
++            target_kind="numeric",
++        )
++
++    def calculate_result(self, normalized_input: PreparedRegressionDataset) -> CalculationResult:
++        predictor_keys = [column.key for column in normalized_input.predictor_columns]
++        target_key = normalized_input.target_column.key
++        X_train = normalized_input.training_frame[predictor_keys].to_numpy(dtype=float)
++        y_train = normalized_input.training_frame[target_key].to_numpy(dtype=float)
++        model = LinearRegression().fit(X_train, y_train)
++        train_predictions = model.predict(X_train)
++        r_squared = float(r2_score(y_train, train_predictions))
++        rmse = float(np.sqrt(mean_squared_error(y_train, train_predictions)))
++        prediction_table = None
++        result_dataset = None
++        if not normalized_input.prediction_frame.empty:
++            X_predict = normalized_input.prediction_frame[predictor_keys].to_numpy(dtype=float)
++            predicted_values = model.predict(X_predict)
++            prediction_table = _prediction_table(normalized_input, predicted_values)
++            result_dataset = _filled_dataset(normalized_input, predicted_values)
++
++        tables = (_linear_coefficients_table(normalized_input, model),)
++        if prediction_table is not None:
++            tables += (prediction_table,)
++
++        return CalculationResult(
++            slug=self.metadata.slug,
++            test_name=self.metadata.name,
++            statistic_name="R²",
++            statistic=display_number(r_squared),
++            metrics=(
++                ResultMetric("Predictors", str(len(normalized_input.predictor_columns))),
++                ResultMetric("Training rows", str(len(normalized_input.training_row_indices))),
++                ResultMetric("Prediction rows", str(len(normalized_input.prediction_row_indices))),
++                ResultMetric("RMSE", format_number(rmse), emphasis=True),
++            ),
++            tables=tables,
++            interpretation="The fitted model combines all predictor columns to estimate the continuous target and populate blank target cells in prediction rows.",
++            warnings=normalized_input.warnings,
++            notes=("All predictor columns are treated as numeric inputs in the design matrix.",),
++            dataset=result_dataset,
++        )
++
++
++class BulkLinearRegressionCalculator(RegressionCalculator):
++    metadata = CalculatorMetadata(
++        catalog_position=3,
++        slug="bulk-linear-regression",
++        name="Bulk Linear Regression",
++        family=TestFamily.REGRESSION,
++        description="Train one linear regression model once and score many blank target rows in a single spreadsheet-style run.",
++        check="What one fitted linear model predicts for a batch of rows where the target is intentionally left blank.",
++        statistic_formula="ŷ = β₀ + Σβᵢxᵢ for many prediction rows",
++        assumptions=(
++            "Training rows reflect a stable linear relationship.",
++            "Predictor columns are numeric.",
++            "Blank target rows are used only for scoring, not training.",
++        ),
++        required_sample_data=(
++            "One target column with completed training rows.",
++            "One or more numeric predictor columns.",
++            "At least two blank target rows to score in bulk.",
++        ),
++        section_slug="regression",
++        workflow_kind=WorkflowKind.DATASET,
++        dataset_schema=BULK_LINEAR_SCHEMA,
++        extra_default_values={"dataset": BULK_LINEAR_SCHEMA["defaultDataset"]},
++    )
++
++    def normalize(self, raw_data: Mapping[str, Any]) -> PreparedRegressionDataset:
++        dataset = self.parse_dataset(raw_data)
++        return prepare_supervised_dataset(
++            dataset,
++            min_training_rows=4,
++            min_prediction_rows=2,
++            min_predictor_columns=1,
++            target_kind="numeric",
++        )
++
++    def calculate_result(self, normalized_input: PreparedRegressionDataset) -> CalculationResult:
++        predictor_keys = [column.key for column in normalized_input.predictor_columns]
++        target_key = normalized_input.target_column.key
++        X_train = normalized_input.training_frame[predictor_keys].to_numpy(dtype=float)
++        y_train = normalized_input.training_frame[target_key].to_numpy(dtype=float)
++        model = LinearRegression().fit(X_train, y_train)
++        train_predictions = model.predict(X_train)
++        r_squared = float(r2_score(y_train, train_predictions))
++        rmse = float(np.sqrt(mean_squared_error(y_train, train_predictions)))
++        X_predict = normalized_input.prediction_frame[predictor_keys].to_numpy(dtype=float)
++        predicted_values = model.predict(X_predict)
++        prediction_table = _prediction_table(normalized_input, predicted_values)
++        assert prediction_table is not None
++
++        return CalculationResult(
++            slug=self.metadata.slug,
++            test_name=self.metadata.name,
++            statistic_name="R²",
++            statistic=display_number(r_squared),
++            metrics=(
++                ResultMetric("Predictors", str(len(normalized_input.predictor_columns))),
++                ResultMetric("Training rows", str(len(normalized_input.training_row_indices))),
++                ResultMetric("Predicted rows", str(len(normalized_input.prediction_row_indices))),
++                ResultMetric("RMSE", format_number(rmse), emphasis=True),
++            ),
++            tables=(_linear_coefficients_table(normalized_input, model), prediction_table),
++            interpretation="One linear model was fitted on the completed rows and then applied across the batch of blank target rows.",
++            warnings=normalized_input.warnings,
++            notes=("Bulk linear regression uses the same fitted model for every blank target row in the sheet.",),
++            dataset=_filled_dataset(normalized_input, predicted_values),
++        )
++
++
++class BinaryLogisticRegressionCalculator(RegressionCalculator):
++    metadata = CalculatorMetadata(
++        catalog_position=4,
++        slug="binary-logistic-regression",
++        name="Binary Logistic Regression",
++        family=TestFamily.CLASSIFICATION,
++        description="Fit a two-class logistic model, then fill blank target rows with predicted labels and class probabilities.",
++        check="How numeric predictors separate two target classes and what class probabilities they imply for unlabeled rows.",
++        statistic_formula="logit(P(Y=1)) = β₀ + Σβᵢxᵢ",
++        assumptions=(
++            "Predictors are numeric and measured consistently.",
++            "Training rows represent exactly two classes.",
++            "Blank target rows are reserved for prediction only.",
++        ),
++        required_sample_data=(
++            "One target column with exactly two classes in the training rows.",
++            "One or more numeric predictor columns.",
++            "Optional blank target rows for prediction.",
++        ),
++        section_slug="regression",
++        workflow_kind=WorkflowKind.DATASET,
++        dataset_schema=BINARY_LOGISTIC_SCHEMA,
++        extra_default_values={"dataset": BINARY_LOGISTIC_SCHEMA["defaultDataset"]},
++    )
++
++    def normalize(self, raw_data: Mapping[str, Any]) -> PreparedRegressionDataset:
++        dataset = self.parse_dataset(raw_data)
++        return prepare_supervised_dataset(
++            dataset,
++            min_training_rows=4,
++            min_predictor_columns=1,
++            target_kind="categorical",
++            minimum_classes=2,
++            maximum_classes=2,
++        )
++
++    def calculate_result(self, normalized_input: PreparedRegressionDataset) -> CalculationResult:
++        predictor_keys = [column.key for column in normalized_input.predictor_columns]
++        target_key = normalized_input.target_column.key
++        X_train = normalized_input.training_frame[predictor_keys].to_numpy(dtype=float)
++        y_train = normalized_input.training_frame[target_key].astype(str).to_numpy()
++        model, fit_warnings = _capture_fit_warnings(lambda: LogisticRegression(max_iter=2000).fit(X_train, y_train))
++        train_probabilities = model.predict_proba(X_train)
++        train_predictions = model.predict(X_train)
++        accuracy = float(accuracy_score(y_train, train_predictions))
++        loss = float(log_loss(y_train, train_probabilities, labels=model.classes_))
++        prediction_table = None
++        dataset = None
++        if not normalized_input.prediction_frame.empty:
++            X_predict = normalized_input.prediction_frame[predictor_keys].to_numpy(dtype=float)
++            predicted_labels = model.predict(X_predict)
++            predicted_probabilities = model.predict_proba(X_predict)
++            prediction_table = _classification_prediction_table(normalized_input, predicted_labels, predicted_probabilities, model.classes_)
++            dataset = _filled_dataset_with_labels(normalized_input, predicted_labels)
++
++        tables = (_logistic_coefficients_table(normalized_input, model),)
++        if prediction_table is not None:
++            tables += (prediction_table,)
++
++        return CalculationResult(
++            slug=self.metadata.slug,
++            test_name=self.metadata.name,
++            statistic_name="Accuracy",
++            statistic=display_number(accuracy),
++            metrics=(
++                ResultMetric("Training rows", str(len(normalized_input.training_row_indices))),
++                ResultMetric("Prediction rows", str(len(normalized_input.prediction_row_indices))),
++                ResultMetric("Classes", ", ".join(str(class_label) for class_label in model.classes_)),
++                ResultMetric("Log loss", format_number(loss), emphasis=True),
++            ),
++            tables=tables,
++            interpretation="The logistic model estimates class probabilities for each row and fills blank targets with the most likely class.",
++            warnings=tuple((*normalized_input.warnings, *_class_balance_warning(normalized_input), *fit_warnings)),
++            notes=("Probabilities are reported for every class so you can inspect prediction confidence.",),
++            dataset=dataset,
++        )
++
++
++class MultinomialLogisticRegressionCalculator(RegressionCalculator):
++    metadata = CalculatorMetadata(
++        catalog_position=5,
++        slug="multinomial-logistic-regression",
++        name="Multinomial Logistic Regression",
++        family=TestFamily.CLASSIFICATION,
++        description="Fit a multi-class logistic model and fill blank target rows with predicted labels and per-class probabilities.",
++        check="How numeric predictors explain a target with three or more categories and which class is most probable for unlabeled rows.",
++        statistic_formula="P(Y=c) = softmax(β₀,c + Σβᵢ,c xᵢ)",
++        assumptions=(
++            "Predictors are numeric.",
++            "Training rows contain at least three target classes.",
++            "Blank target rows are held back for prediction.",
++        ),
++        required_sample_data=(
++            "One target column with at least three classes in the training rows.",
++            "One or more numeric predictor columns.",
++            "Optional blank target rows for prediction.",
++        ),
++        section_slug="regression",
++        workflow_kind=WorkflowKind.DATASET,
++        dataset_schema=MULTINOMIAL_LOGISTIC_SCHEMA,
++        extra_default_values={"dataset": MULTINOMIAL_LOGISTIC_SCHEMA["defaultDataset"]},
++    )
++
++    def normalize(self, raw_data: Mapping[str, Any]) -> PreparedRegressionDataset:
++        dataset = self.parse_dataset(raw_data)
++        return prepare_supervised_dataset(
++            dataset,
++            min_training_rows=6,
++            min_predictor_columns=1,
++            target_kind="categorical",
++            minimum_classes=3,
++        )
++
++    def calculate_result(self, normalized_input: PreparedRegressionDataset) -> CalculationResult:
++        predictor_keys = [column.key for column in normalized_input.predictor_columns]
++        target_key = normalized_input.target_column.key
++        X_train = normalized_input.training_frame[predictor_keys].to_numpy(dtype=float)
++        y_train = normalized_input.training_frame[target_key].astype(str).to_numpy()
++        model, fit_warnings = _capture_fit_warnings(lambda: LogisticRegression(max_iter=3000, multi_class="multinomial").fit(X_train, y_train))
++        train_probabilities = model.predict_proba(X_train)
++        train_predictions = model.predict(X_train)
++        accuracy = float(accuracy_score(y_train, train_predictions))
++        loss = float(log_loss(y_train, train_probabilities, labels=model.classes_))
++        prediction_table = None
++        dataset = None
++        if not normalized_input.prediction_frame.empty:
++            X_predict = normalized_input.prediction_frame[predictor_keys].to_numpy(dtype=float)
++            predicted_labels = model.predict(X_predict)
++            predicted_probabilities = model.predict_proba(X_predict)
++            prediction_table = _classification_prediction_table(normalized_input, predicted_labels, predicted_probabilities, model.classes_)
++            dataset = _filled_dataset_with_labels(normalized_input, predicted_labels)
++
++        tables = (_logistic_coefficients_table(normalized_input, model),)
++        if prediction_table is not None:
++            tables += (prediction_table,)
++
++        return CalculationResult(
++            slug=self.metadata.slug,
++            test_name=self.metadata.name,
++            statistic_name="Accuracy",
++            statistic=display_number(accuracy),
++            metrics=(
++                ResultMetric("Training rows", str(len(normalized_input.training_row_indices))),
++                ResultMetric("Prediction rows", str(len(normalized_input.prediction_row_indices))),
++                ResultMetric("Classes", str(len(model.classes_))),
++                ResultMetric("Log loss", format_number(loss), emphasis=True),
++            ),
++            tables=tables,
++            interpretation="The multinomial logistic model estimates probabilities for every class and assigns the highest-probability class to each blank target row.",
++            warnings=tuple((*normalized_input.warnings, *_class_balance_warning(normalized_input), *fit_warnings)),
++            notes=("Per-class coefficient rows show how each predictor changes the relative log-odds for each class.",),
++            dataset=dataset,
++        )
++
++
++class PropensityScoreMatchingCalculator(RegressionCalculator):
++    metadata = CalculatorMetadata(
++        catalog_position=6,
++        slug="propensity-score-matching",
++        name="Propensity Score Matching",
++        family=TestFamily.CAUSAL_INFERENCE,
++        description="Estimate propensity scores and perform 1:1 nearest-neighbor matching without replacement.",
++        check="How well treatment and control rows can be matched on observed predictors before comparing their outcomes.",
++        statistic_formula="ATT = mean(Yᵗʳᵉᵃᵗᵉᵈ - Yᶜᵒⁿᵗʳᵒˡ) after 1:1 nearest-neighbor matching",
++        assumptions=(
++            "Predictors capture the main observed confounders.",
++            "Treatment assignment has exactly two groups.",
++            "Outcome values are numeric and measured on a comparable scale.",
++        ),
++        required_sample_data=(
++            "One treatment column with exactly two groups.",
++            "One numeric outcome column.",
++            "One or more numeric predictor columns and an optional ID column.",
++        ),
++        section_slug="regression",
++        workflow_kind=WorkflowKind.DATASET,
++        dataset_schema=PSM_SCHEMA,
++        extra_default_values={"dataset": PSM_SCHEMA["defaultDataset"]},
++    )
++
++    def normalize(self, raw_data: Mapping[str, Any]) -> PreparedMatchingDataset:
++        dataset = self.parse_dataset(raw_data)
++        return prepare_matching_dataset(dataset)
++
++    def calculate_result(self, normalized_input: PreparedMatchingDataset) -> CalculationResult:
++        predictor_keys = [column.key for column in normalized_input.predictor_columns]
++        treatment_key = normalized_input.treatment_column.key
++        outcome_key = normalized_input.outcome_column.key
++        dataframe = normalized_input.dataframe.copy()
++        treatment_labels = np.array(sorted(dataframe[treatment_key].astype(str).unique()))
++        treated_label, control_label = _select_treated_and_control_labels(treatment_labels)
++        y = (dataframe[treatment_key].astype(str) == treated_label).astype(int).to_numpy()
++        X = dataframe[predictor_keys].to_numpy(dtype=float)
++        model, fit_warnings = _capture_fit_warnings(lambda: LogisticRegression(max_iter=2000).fit(X, y))
++        dataframe["propensity_score"] = model.predict_proba(X)[:, 1]
++
++        treated_frame = dataframe[dataframe[treatment_key].astype(str) == treated_label].copy()
++        control_frame = dataframe[dataframe[treatment_key].astype(str) == control_label].copy()
++
++        remaining_control_indices = list(control_frame.index)
++        matched_pairs: list[MatchingPairResult] = []
++        unmatched_treated = 0
++
++        for _, treated_row in treated_frame.sort_values("propensity_score").iterrows():
++            if not remaining_control_indices:
++                unmatched_treated += 1
++                continue
++            available_controls = control_frame.loc[remaining_control_indices]
++            neighbors = NearestNeighbors(n_neighbors=1)
++            neighbors.fit(available_controls[["propensity_score"]].to_numpy(dtype=float))
++            distance, neighbor_index = neighbors.kneighbors([[float(treated_row["propensity_score"])]])
++            matched_control_index = available_controls.index[int(neighbor_index[0][0])]
++            control_row = control_frame.loc[matched_control_index]
++            remaining_control_indices.remove(matched_control_index)
++            matched_pairs.append(
++                MatchingPairResult(
++                    treated_id=str(treated_row["__row_id__"]),
++                    control_id=str(control_row["__row_id__"]),
++                    treated_score=float(treated_row["propensity_score"]),
++                    control_score=float(control_row["propensity_score"]),
++                    distance=float(distance[0][0]),
++                    treated_outcome=float(treated_row[outcome_key]),
++                    control_outcome=float(control_row[outcome_key]),
++                )
++            )
++
++        pair_count = len(matched_pairs)
++        att = float(np.mean([pair.treated_outcome - pair.control_outcome for pair in matched_pairs])) if matched_pairs else 0.0
++        average_distance = float(np.mean([pair.distance for pair in matched_pairs])) if matched_pairs else 0.0
++
++        pair_table = ResultTable(
++            title="Matched pairs",
++            columns=(
++                "Treated ID",
++                "Control ID",
++                "Treated score",
++                "Control score",
++                "Distance",
++                "Treated outcome",
++                "Control outcome",
++                "Outcome difference",
++            ),
++            rows=tuple(pair.to_table_row() for pair in matched_pairs),
++            caption="Pairs are built with 1:1 nearest-neighbor matching without replacement on the estimated propensity score.",
++        )
++        balance_table = _balance_table(normalized_input, treated_frame, control_frame, tuple(matched_pairs))
++        coefficient_table = ResultTable(
++            title="Propensity model coefficients",
++            columns=("Term", "Coefficient"),
++            rows=tuple(
++                [("Intercept", format_number(float(model.intercept_[0])))]
++                + [(column.label, format_number(float(coefficient))) for column, coefficient in zip(normalized_input.predictor_columns, model.coef_[0], strict=True)]
++            ),
++        )
++
++        warnings = [*normalized_input.warnings, *fit_warnings]
++        if unmatched_treated:
++            warnings.append(f"{unmatched_treated} treated row(s) could not be matched because no control rows remained.")
++
++        return CalculationResult(
++            slug=self.metadata.slug,
++            test_name=self.metadata.name,
++            statistic_name="Matched pairs",
++            statistic=DisplayValue(raw=pair_count, display=str(pair_count)),
++            metrics=(
++                ResultMetric("Treated label", treated_label),
++                ResultMetric("Control label", control_label),
++                ResultMetric("ATT", format_number(att), emphasis=True),
++                ResultMetric("Mean propensity gap", format_number(average_distance)),
++            ),
++            sections=(
++                ResultSection(
++                    title="Matched sample",
++                    metrics=(
++                        ResultMetric("Treated rows", str(len(treated_frame))),
++                        ResultMetric("Control rows", str(len(control_frame))),
++                        ResultMetric("Matched treated rows", str(pair_count)),
++                        ResultMetric("Unmatched treated rows", str(unmatched_treated)),
++                    ),
++                ),
++            ),
++            tables=(coefficient_table, pair_table, balance_table),
++            interpretation="The propensity model estimates each row's treatment probability, then greedily matches each treated row to the nearest remaining control row without replacement.",
++            warnings=tuple(warnings),
++            notes=("ATT is reported as the mean treated-minus-control outcome difference across the matched pairs.",),
++        )
+
+--- /dev/null
++++ test_statistics/services/regression_validators.py
+@@ -0,0 +1,375 @@
++from __future__ import annotations
++
++import json
++from collections import Counter
++from collections.abc import Iterable, Mapping
++from typing import Any
++
++import pandas as pd
++
++from test_statistics.domain.enums import DatasetColumnRole
++from test_statistics.domain.regression_inputs import PreparedMatchingDataset, PreparedRegressionDataset, RegressionColumn, RegressionDataset, RegressionRow
++from test_statistics.domain.results import ValidationIssue
++from test_statistics.services.validators import build_error, raise_if_issues
++
++
++_ALLOWED_ROLES = {role.value for role in DatasetColumnRole}
++
++
++def parse_regression_dataset(payload: object, field: str = "dataset") -> tuple[RegressionDataset | None, list[ValidationIssue]]:
++    issues: list[ValidationIssue] = []
++    raw_payload: Any = payload
++    if isinstance(payload, str):
++        if not payload.strip():
++            return None, [build_error(field, "Dataset payload is required.")]
++        try:
++            raw_payload = json.loads(payload)
++        except json.JSONDecodeError:
++            return None, [build_error(field, "Dataset payload must be valid JSON.")]
++
++    if not isinstance(raw_payload, Mapping):
++        return None, [build_error(field, "Dataset payload must be an object.")]
++
++    columns_payload = raw_payload.get("columns")
++    rows_payload = raw_payload.get("rows")
++    if not isinstance(columns_payload, list) or not columns_payload:
++        issues.append(build_error(f"{field}.columns", "Add at least one dataset column."))
++        columns_payload = []
++    if not isinstance(rows_payload, list) or not rows_payload:
++        issues.append(build_error(f"{field}.rows", "Add at least one dataset row."))
++        rows_payload = []
++
++    columns: list[RegressionColumn] = []
++    seen_labels: set[str] = set()
++    role_counts: Counter[str] = Counter()
++
++    for index, column_payload in enumerate(columns_payload):
++        if not isinstance(column_payload, Mapping):
++            issues.append(build_error(f"{field}.columns.{index}", "Each column must be an object."))
++            continue
++
++        label = str(column_payload.get("label") or "").strip()
++        role_value = str(column_payload.get("role") or DatasetColumnRole.PREDICTOR.value)
++        key = str(column_payload.get("key") or f"column_{index + 1}")
++
++        if not label:
++            issues.append(build_error(f"{field}.columns.{index}.label", "Column name is required."))
++        normalized_label = label.casefold()
++        if label and normalized_label in seen_labels:
++            issues.append(build_error(f"{field}.columns.{index}.label", f"Column name '{label}' is duplicated."))
++        elif label:
++            seen_labels.add(normalized_label)
++
++        if role_value not in _ALLOWED_ROLES:
++            issues.append(build_error(f"{field}.columns.{index}.role", "Choose a valid column role."))
++            role = DatasetColumnRole.PREDICTOR
++        else:
++            role = DatasetColumnRole(role_value)
++            role_counts[role.value] += 1
++
++        columns.append(RegressionColumn(key=key, label=label, role=role))
++
++    rows: list[RegressionRow] = []
++    expected_width = len(columns)
++    for row_index, row_payload in enumerate(rows_payload):
++        if not isinstance(row_payload, Mapping):
++            issues.append(build_error(f"{field}.rows.{row_index}", "Each row must be an object."))
++            continue
++        cells_payload = row_payload.get("cells")
++        if not isinstance(cells_payload, list):
++            issues.append(build_error(f"{field}.rows.{row_index}.cells", "Each row must include a cell list."))
++            continue
++        if expected_width and len(cells_payload) != expected_width:
++            issues.append(
++                build_error(
++                    f"{field}.rows.{row_index}.cells",
++                    f"Row {row_index + 1} must contain exactly {expected_width} cells.",
++                )
++            )
++            continue
++        rows.append(RegressionRow(cells=tuple("" if cell is None else str(cell).strip() for cell in cells_payload)))
++
++    return (
++        RegressionDataset(
++            columns=tuple(columns),
++            rows=tuple(rows),
++            source_mode=str(raw_payload.get("sourceMode") or "grid"),
++            filename=str(raw_payload.get("filename") or ""),
++        )
++        if not issues
++        else None,
++        issues,
++    )
++
++
++def validate_role_counts(
++    dataset: RegressionDataset,
++    *,
++    field: str = "dataset",
++    required_roles: Mapping[DatasetColumnRole, int],
++    maximum_roles: Mapping[DatasetColumnRole, int] | None = None,
++) -> list[ValidationIssue]:
++    issues: list[ValidationIssue] = []
++    role_counts = Counter(column.role for column in dataset.columns)
++
++    for role, expected_count in required_roles.items():
++        actual = role_counts.get(role, 0)
++        if actual < expected_count:
++            label = role.value.replace("_", " ")
++            issues.append(build_error(f"{field}.columns", f"Select {expected_count} column(s) with the '{label}' role."))
++
++    if maximum_roles is not None:
++        for role, maximum_count in maximum_roles.items():
++            actual = role_counts.get(role, 0)
++            if actual > maximum_count:
++                label = role.value.replace("_", " ")
++                issues.append(build_error(f"{field}.columns", f"Use at most {maximum_count} column(s) with the '{label}' role."))
++
++    return issues
++
++
++def prepare_supervised_dataset(
++    dataset: RegressionDataset,
++    *,
++    field: str = "dataset",
++    min_training_rows: int = 3,
++    min_prediction_rows: int = 0,
++    min_predictor_columns: int = 1,
++    max_predictor_columns: int | None = None,
++    target_kind: str = "numeric",
++    minimum_classes: int | None = None,
++    maximum_classes: int | None = None,
++) -> PreparedRegressionDataset:
++    issues = validate_role_counts(
++        dataset,
++        field=field,
++        required_roles={DatasetColumnRole.TARGET: 1, DatasetColumnRole.PREDICTOR: min_predictor_columns},
++        maximum_roles={DatasetColumnRole.TARGET: 1} | ({DatasetColumnRole.PREDICTOR: max_predictor_columns} if max_predictor_columns is not None else {}),
++    )
++    if issues:
++        raise_if_issues(issues)
++
++    predictor_columns = tuple(column for column in dataset.columns if column.role is DatasetColumnRole.PREDICTOR)
++    target_column = next(column for column in dataset.columns if column.role is DatasetColumnRole.TARGET)
++    id_column = next((column for column in dataset.columns if column.role is DatasetColumnRole.ID), None)
++
++    training_rows: list[dict[str, Any]] = []
++    prediction_rows: list[dict[str, Any]] = []
++    training_row_indices: list[int] = []
++    prediction_row_indices: list[int] = []
++    warnings: list[str] = []
++
++    target_index = dataset.columns.index(target_column)
++    predictor_indices = [dataset.columns.index(column) for column in predictor_columns]
++    id_index = dataset.columns.index(id_column) if id_column is not None else None
++
++    for row_index, row in enumerate(dataset.rows):
++        if len(row.cells) != len(dataset.columns):
++            issues.append(build_error(f"{field}.rows.{row_index}.cells", f"Row {row_index + 1} has the wrong number of cells."))
++            continue
++
++        if all(not cell.strip() for cell in row.cells):
++            warnings.append(f"Ignored empty row {row_index + 1}.")
++            continue
++
++        row_identifier = row.cells[id_index] if id_index is not None else str(row_index + 1)
++        predictors: dict[str, float] = {}
++        has_predictor_error = False
++        for predictor_column, predictor_index in zip(predictor_columns, predictor_indices, strict=True):
++            cell_value = row.cells[predictor_index].strip()
++            if not cell_value:
++                issues.append(
++                    build_error(
++                        f"{field}.rows.{row_index}.cells.{predictor_index}",
++                        f"{predictor_column.label} is required on row {row_index + 1}.",
++                    )
++                )
++                has_predictor_error = True
++                continue
++            try:
++                predictors[predictor_column.key] = float(cell_value)
++            except ValueError:
++                issues.append(
++                    build_error(
++                        f"{field}.rows.{row_index}.cells.{predictor_index}",
++                        f"{predictor_column.label} must be numeric on row {row_index + 1}.",
++                    )
++                )
++                has_predictor_error = True
++
++        if has_predictor_error:
++            continue
++
++        target_value = row.cells[target_index].strip()
++        base_row = {**predictors, "__row_index__": row_index, "__row_id__": row_identifier}
++        if not target_value:
++            prediction_rows.append(base_row)
++            prediction_row_indices.append(row_index)
++            continue
++
++        if target_kind == "numeric":
++            try:
++                parsed_target: Any = float(target_value)
++            except ValueError:
++                issues.append(
++                    build_error(
++                        f"{field}.rows.{row_index}.cells.{target_index}",
++                        f"{target_column.label} must be numeric on row {row_index + 1}.",
++                    )
++                )
++                continue
++        else:
++            parsed_target = target_value
++
++        training_rows.append({**base_row, target_column.key: parsed_target})
++        training_row_indices.append(row_index)
++
++    if len(training_rows) < min_training_rows:
++        issues.append(build_error(f"{field}.rows", f"Provide at least {min_training_rows} training row(s) with a filled target value."))
++    if len(prediction_rows) < min_prediction_rows:
++        issues.append(build_error(f"{field}.rows", f"Provide at least {min_prediction_rows} prediction row(s) with a blank target value."))
++
++    training_frame = pd.DataFrame(training_rows)
++    prediction_frame = pd.DataFrame(prediction_rows)
++
++    if minimum_classes is not None and not training_frame.empty:
++        class_count = int(training_frame[target_column.key].nunique())
++        if class_count < minimum_classes:
++            issues.append(build_error(f"{field}.rows", f"{target_column.label} must contain at least {minimum_classes} classes in the training rows."))
++        if maximum_classes is not None and class_count > maximum_classes:
++            issues.append(build_error(f"{field}.rows", f"{target_column.label} must contain no more than {maximum_classes} classes in the training rows."))
++
++    raise_if_issues(issues)
++    return PreparedRegressionDataset(
++        dataset=dataset,
++        predictor_columns=predictor_columns,
++        target_column=target_column,
++        id_column=id_column,
++        training_frame=training_frame,
++        prediction_frame=prediction_frame,
++        training_row_indices=tuple(training_row_indices),
++        prediction_row_indices=tuple(prediction_row_indices),
++        warnings=tuple(warnings),
++    )
++
++
++def prepare_matching_dataset(
++    dataset: RegressionDataset,
++    *,
++    field: str = "dataset",
++    min_rows: int = 4,
++) -> PreparedMatchingDataset:
++    issues = validate_role_counts(
++        dataset,
++        field=field,
++        required_roles={
++            DatasetColumnRole.TREATMENT: 1,
++            DatasetColumnRole.OUTCOME: 1,
++            DatasetColumnRole.PREDICTOR: 1,
++        },
++        maximum_roles={
++            DatasetColumnRole.TREATMENT: 1,
++            DatasetColumnRole.OUTCOME: 1,
++        },
++    )
++    if issues:
++        raise_if_issues(issues)
++
++    predictor_columns = tuple(column for column in dataset.columns if column.role is DatasetColumnRole.PREDICTOR)
++    treatment_column = next(column for column in dataset.columns if column.role is DatasetColumnRole.TREATMENT)
++    outcome_column = next(column for column in dataset.columns if column.role is DatasetColumnRole.OUTCOME)
++    id_column = next((column for column in dataset.columns if column.role is DatasetColumnRole.ID), None)
++
++    treatment_index = dataset.columns.index(treatment_column)
++    outcome_index = dataset.columns.index(outcome_column)
++    predictor_indices = [dataset.columns.index(column) for column in predictor_columns]
++    id_index = dataset.columns.index(id_column) if id_column is not None else None
++
++    rows: list[dict[str, Any]] = []
++    warnings: list[str] = []
++    treatment_labels: set[str] = set()
++
++    for row_index, row in enumerate(dataset.rows):
++        if all(not cell.strip() for cell in row.cells):
++            warnings.append(f"Ignored empty row {row_index + 1}.")
++            continue
++
++        row_identifier = row.cells[id_index] if id_index is not None and row.cells[id_index].strip() else str(row_index + 1)
++        treatment_value = row.cells[treatment_index].strip()
++        outcome_value = row.cells[outcome_index].strip()
++
++        if not treatment_value:
++            issues.append(build_error(f"{field}.rows.{row_index}.cells.{treatment_index}", f"{treatment_column.label} is required on row {row_index + 1}."))
++            continue
++        if not outcome_value:
++            issues.append(build_error(f"{field}.rows.{row_index}.cells.{outcome_index}", f"{outcome_column.label} is required on row {row_index + 1}."))
++            continue
++
++        try:
++            parsed_outcome = float(outcome_value)
++        except ValueError:
++            issues.append(build_error(f"{field}.rows.{row_index}.cells.{outcome_index}", f"{outcome_column.label} must be numeric on row {row_index + 1}."))
++            continue
++
++        predictor_values: dict[str, float] = {}
++        row_has_error = False
++        for predictor_column, predictor_index in zip(predictor_columns, predictor_indices, strict=True):
++            cell_value = row.cells[predictor_index].strip()
++            if not cell_value:
++                issues.append(build_error(f"{field}.rows.{row_index}.cells.{predictor_index}", f"{predictor_column.label} is required on row {row_index + 1}."))
++                row_has_error = True
++                continue
++            try:
++                predictor_values[predictor_column.key] = float(cell_value)
++            except ValueError:
++                issues.append(build_error(f"{field}.rows.{row_index}.cells.{predictor_index}", f"{predictor_column.label} must be numeric on row {row_index + 1}."))
++                row_has_error = True
++        if row_has_error:
++            continue
++
++        treatment_labels.add(treatment_value)
++        rows.append(
++            {
++                **predictor_values,
++                treatment_column.key: treatment_value,
++                outcome_column.key: parsed_outcome,
++                "__row_id__": row_identifier,
++                "__row_index__": row_index,
++            }
++        )
++
++    if len(rows) < min_rows:
++        issues.append(build_error(f"{field}.rows", f"Provide at least {min_rows} populated rows for propensity score matching."))
++    if len(treatment_labels) != 2:
++        issues.append(build_error(f"{field}.rows", f"{treatment_column.label} must contain exactly two treatment groups."))
++
++    dataframe = pd.DataFrame(rows)
++    if not dataframe.empty and len(treatment_labels) == 2:
++        counts = dataframe[treatment_column.key].value_counts()
++        if (counts < 2).any():
++            issues.append(build_error(f"{field}.rows", f"Each treatment group in {treatment_column.label} must contain at least two rows."))
++
++    raise_if_issues(issues)
++    return PreparedMatchingDataset(
++        dataset=dataset,
++        predictor_columns=predictor_columns,
++        treatment_column=treatment_column,
++        outcome_column=outcome_column,
++        id_column=id_column,
++        dataframe=dataframe,
++        warnings=tuple(warnings),
++    )
++
++
++def require_binary_target(prepared: PreparedRegressionDataset, *, field: str = "dataset.rows") -> None:
++    values = prepared.training_frame[prepared.target_column.key]
++    class_count = int(values.nunique())
++    if class_count != 2:
++        raise_if_issues([build_error(field, f"{prepared.target_column.label} must contain exactly two classes in the training rows.")])
++
++
++def require_multiclass_target(prepared: PreparedRegressionDataset, *, field: str = "dataset.rows") -> None:
++    values = prepared.training_frame[prepared.target_column.key]
++    class_count = int(values.nunique())
++    if class_count < 3:
++        raise_if_issues([build_error(field, f"{prepared.target_column.label} must contain at least three classes in the training rows.")])
+
+--- /dev/null
++++ test_statistics/tests/test_regression.py
+@@ -0,0 +1,185 @@
++from django.test import SimpleTestCase
++
++from test_statistics.services.calculators.registry import calculate_test_statistic
++
++
++class RegressionCalculatorTests(SimpleTestCase):
++    def test_simple_linear_regression_fills_blank_prediction_rows(self):
++        result = calculate_test_statistic(
++            "simple-linear-regression",
++            {
++                "dataset": {
++                    "columns": [
++                        {"key": "column_1", "label": "x", "role": "predictor"},
++                        {"key": "column_2", "label": "y", "role": "target"},
++                    ],
++                    "rows": [
++                        {"cells": ["1", "15"]},
++                        {"cells": ["2", "25"]},
++                        {"cells": ["3", "35"]},
++                        {"cells": ["4", "45"]},
++                        {"cells": ["5", "55"]},
++                        {"cells": ["6", ""]},
++                    ],
++                    "sourceMode": "grid",
++                    "filename": "",
++                }
++            },
++        )
++
++        self.assertEqual(result.statistic_name, "R²")
++        self.assertEqual(result.statistic.display, "1")
++        self.assertEqual(result.dataset["rows"][-1]["cells"][1], "65")
++        self.assertEqual(result.tables[1].title, "Predicted rows")
++
++    def test_multiple_linear_regression_returns_coefficients_and_predictions(self):
++        result = calculate_test_statistic(
++            "multiple-linear-regression",
++            {
++                "dataset": {
++                    "columns": [
++                        {"key": "column_1", "label": "x1", "role": "predictor"},
++                        {"key": "column_2", "label": "x2", "role": "predictor"},
++                        {"key": "column_3", "label": "y", "role": "target"},
++                    ],
++                    "rows": [
++                        {"cells": ["1", "1", "15"]},
++                        {"cells": ["2", "1", "17"]},
++                        {"cells": ["1", "2", "18"]},
++                        {"cells": ["2", "2", "20"]},
++                        {"cells": ["3", "2", "22"]},
++                        {"cells": ["3", "3", ""]},
++                    ],
++                    "sourceMode": "grid",
++                    "filename": "",
++                }
++            },
++        )
++
++        self.assertEqual(result.tables[0].title, "Coefficients")
++        self.assertEqual(result.tables[1].title, "Predicted rows")
++        self.assertEqual(result.dataset["rows"][-1]["cells"][2], "25")
++
++    def test_bulk_linear_regression_predicts_multiple_rows(self):
++        result = calculate_test_statistic(
++            "bulk-linear-regression",
++            {
++                "dataset": {
++                    "columns": [
++                        {"key": "column_1", "label": "x1", "role": "predictor"},
++                        {"key": "column_2", "label": "x2", "role": "predictor"},
++                        {"key": "column_3", "label": "y", "role": "target"},
++                    ],
++                    "rows": [
++                        {"cells": ["1", "1", "12"]},
++                        {"cells": ["2", "1", "14"]},
++                        {"cells": ["1", "2", "15"]},
++                        {"cells": ["2", "2", "17"]},
++                        {"cells": ["3", "2", "19"]},
++                        {"cells": ["3", "3", ""]},
++                        {"cells": ["4", "3", ""]},
++                    ],
++                    "sourceMode": "grid",
++                    "filename": "",
++                }
++            },
++        )
++
++        self.assertEqual(result.metrics[2].value, "2")
++        self.assertEqual(result.tables[1].rows[0][-1], "22")
++        self.assertEqual(result.tables[1].rows[1][-1], "24")
++
++    def test_binary_logistic_regression_returns_class_predictions(self):
++        result = calculate_test_statistic(
++            "binary-logistic-regression",
++            {
++                "dataset": {
++                    "columns": [
++                        {"key": "column_1", "label": "age", "role": "predictor"},
++                        {"key": "column_2", "label": "income", "role": "predictor"},
++                        {"key": "column_3", "label": "label", "role": "target"},
++                    ],
++                    "rows": [
++                        {"cells": ["20", "30", "No"]},
++                        {"cells": ["24", "35", "No"]},
++                        {"cells": ["29", "41", "No"]},
++                        {"cells": ["36", "55", "Yes"]},
++                        {"cells": ["42", "63", "Yes"]},
++                        {"cells": ["48", "72", "Yes"]},
++                        {"cells": ["45", "68", ""]},
++                    ],
++                    "sourceMode": "grid",
++                    "filename": "",
++                }
++            },
++        )
++
++        self.assertEqual(result.statistic_name, "Accuracy")
++        self.assertEqual(result.tables[0].title, "Coefficients")
++        self.assertEqual(result.tables[1].title, "Predicted rows")
++        self.assertEqual(result.dataset["rows"][-1]["cells"][2], "Yes")
++
++    def test_multinomial_logistic_regression_returns_probability_table(self):
++        result = calculate_test_statistic(
++            "multinomial-logistic-regression",
++            {
++                "dataset": {
++                    "columns": [
++                        {"key": "column_1", "label": "tenure", "role": "predictor"},
++                        {"key": "column_2", "label": "usage", "role": "predictor"},
++                        {"key": "column_3", "label": "plan", "role": "target"},
++                    ],
++                    "rows": [
++                        {"cells": ["2", "10", "Basic"]},
++                        {"cells": ["4", "15", "Basic"]},
++                        {"cells": ["8", "28", "Standard"]},
++                        {"cells": ["10", "34", "Standard"]},
++                        {"cells": ["14", "50", "Premium"]},
++                        {"cells": ["18", "62", "Premium"]},
++                        {"cells": ["11", "39", "Standard"]},
++                        {"cells": ["16", "57", ""]},
++                    ],
++                    "sourceMode": "grid",
++                    "filename": "",
++                }
++            },
++        )
++
++        self.assertEqual(result.tables[1].title, "Predicted rows")
++        self.assertEqual(result.dataset["rows"][-1]["cells"][2], "Premium")
++        self.assertIn("P(Basic)", result.tables[1].columns)
++        self.assertIn("P(Premium)", result.tables[1].columns)
++
++    def test_propensity_score_matching_returns_pairs_and_balance(self):
++        result = calculate_test_statistic(
++            "propensity-score-matching",
++            {
++                "dataset": {
++                    "columns": [
++                        {"key": "column_1", "label": "id", "role": "id"},
++                        {"key": "column_2", "label": "age", "role": "predictor"},
++                        {"key": "column_3", "label": "risk", "role": "predictor"},
++                        {"key": "column_4", "label": "treatment", "role": "treatment"},
++                        {"key": "column_5", "label": "outcome", "role": "outcome"},
++                    ],
++                    "rows": [
++                        {"cells": ["T1", "44", "0.82", "Treated", "78"]},
++                        {"cells": ["T2", "39", "0.74", "Treated", "73"]},
++                        {"cells": ["T3", "47", "0.91", "Treated", "81"]},
++                        {"cells": ["T4", "41", "0.69", "Treated", "76"]},
++                        {"cells": ["C1", "43", "0.80", "Control", "69"]},
++                        {"cells": ["C2", "37", "0.71", "Control", "68"]},
++                        {"cells": ["C3", "49", "0.89", "Control", "72"]},
++                        {"cells": ["C4", "40", "0.67", "Control", "70"]},
++                    ],
++                    "sourceMode": "grid",
++                    "filename": "",
++                }
++            },
++        )
++
++        self.assertEqual(result.statistic_name, "Matched pairs")
++        self.assertEqual(result.statistic.display, "4")
++        self.assertEqual(result.tables[1].title, "Matched pairs")
++        self.assertEqual(result.tables[2].title, "Balance summary")
++        self.assertEqual(len(result.tables[1].rows), 4)
+
+--- /dev/null
++++ test_statistics/tests/test_regression_validation.py
+@@ -0,0 +1,140 @@
++from django.test import SimpleTestCase
++
++from test_statistics.services.calculators.registry import calculate_test_statistic
++from test_statistics.services.validators import ValidationIssues, errors_by_field
++
++
++class RegressionValidationTests(SimpleTestCase):
++    def test_dataset_parsing_rejects_duplicate_column_labels(self):
++        with self.assertRaises(ValidationIssues) as context:
++            calculate_test_statistic(
++                "simple-linear-regression",
++                {
++                    "dataset": {
++                        "columns": [
++                            {"key": "column_1", "label": "Value", "role": "predictor"},
++                            {"key": "column_2", "label": "Value", "role": "target"},
++                        ],
++                        "rows": [
++                            {"cells": ["1", "2"]},
++                            {"cells": ["2", "4"]},
++                            {"cells": ["3", "6"]},
++                        ],
++                        "sourceMode": "grid",
++                        "filename": "",
++                    }
++                },
++            )
++
++        self.assertEqual(
++            errors_by_field(context.exception.issues),
++            {"dataset.columns.1.label": ["Column name 'Value' is duplicated."]},
++        )
++
++    def test_blank_target_rows_are_allowed_for_prediction(self):
++        result = calculate_test_statistic(
++            "simple-linear-regression",
++            {
++                "dataset": {
++                    "columns": [
++                        {"key": "column_1", "label": "x", "role": "predictor"},
++                        {"key": "column_2", "label": "y", "role": "target"},
++                    ],
++                    "rows": [
++                        {"cells": ["1", "10"]},
++                        {"cells": ["2", "20"]},
++                        {"cells": ["3", "30"]},
++                        {"cells": ["4", ""]},
++                    ],
++                    "sourceMode": "grid",
++                    "filename": "",
++                }
++            },
++        )
++
++        self.assertEqual(result.dataset["rows"][-1]["cells"][1], "40")
++
++    def test_binary_logistic_requires_exactly_two_training_classes(self):
++        with self.assertRaises(ValidationIssues) as context:
++            calculate_test_statistic(
++                "binary-logistic-regression",
++                {
++                    "dataset": {
++                        "columns": [
++                            {"key": "column_1", "label": "x", "role": "predictor"},
++                            {"key": "column_2", "label": "y", "role": "target"},
++                        ],
++                        "rows": [
++                            {"cells": ["1", "A"]},
++                            {"cells": ["2", "B"]},
++                            {"cells": ["3", "C"]},
++                            {"cells": ["4", "A"]},
++                        ],
++                        "sourceMode": "grid",
++                        "filename": "",
++                    }
++                },
++            )
++
++        self.assertEqual(
++            errors_by_field(context.exception.issues),
++            {"dataset.rows": ["y must contain no more than 2 classes in the training rows."]},
++        )
++
++    def test_multinomial_logistic_requires_three_classes(self):
++        with self.assertRaises(ValidationIssues) as context:
++            calculate_test_statistic(
++                "multinomial-logistic-regression",
++                {
++                    "dataset": {
++                        "columns": [
++                            {"key": "column_1", "label": "x", "role": "predictor"},
++                            {"key": "column_2", "label": "y", "role": "target"},
++                        ],
++                        "rows": [
++                            {"cells": ["1", "A"]},
++                            {"cells": ["2", "A"]},
++                            {"cells": ["3", "B"]},
++                            {"cells": ["4", "B"]},
++                            {"cells": ["5", "A"]},
++                            {"cells": ["6", "B"]},
++                        ],
++                        "sourceMode": "grid",
++                        "filename": "",
++                    }
++                },
++            )
++
++        self.assertEqual(
++            errors_by_field(context.exception.issues),
++            {"dataset.rows": ["y must contain at least 3 classes in the training rows."]},
++        )
++
++    def test_propensity_score_matching_requires_two_treatment_groups(self):
++        with self.assertRaises(ValidationIssues) as context:
++            calculate_test_statistic(
++                "propensity-score-matching",
++                {
++                    "dataset": {
++                        "columns": [
++                            {"key": "column_1", "label": "id", "role": "id"},
++                            {"key": "column_2", "label": "x", "role": "predictor"},
++                            {"key": "column_3", "label": "treatment", "role": "treatment"},
++                            {"key": "column_4", "label": "outcome", "role": "outcome"},
++                        ],
++                        "rows": [
++                            {"cells": ["1", "0.2", "Treated", "10"]},
++                            {"cells": ["2", "0.3", "Treated", "11"]},
++                            {"cells": ["3", "0.4", "Treated", "12"]},
++                            {"cells": ["4", "0.5", "Treated", "13"]},
++                        ],
++                        "sourceMode": "grid",
++                        "filename": "",
++                    }
++                },
++            )
++
++        self.assertEqual(
++            errors_by_field(context.exception.issues),
++            {"dataset.rows": ["treatment must contain exactly two treatment groups."]},
++        )

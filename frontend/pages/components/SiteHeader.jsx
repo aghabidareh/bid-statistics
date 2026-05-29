@@ -3,6 +3,7 @@ import { Link } from "@inertiajs/react";
 const NAV_ITEMS = [
   { label: "Home", href: "/", key: "/" },
   { label: "Test Statistics", href: "/test-statistics/", key: "/test-statistics" },
+  { label: "Regression", href: "/regression/", key: "/regression" },
 ];
 
 export default function SiteHeader({ currentPath = "/" }) {

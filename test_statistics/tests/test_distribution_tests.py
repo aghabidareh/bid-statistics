@@ -1,6 +1,6 @@
 from django.test import SimpleTestCase
 
-from test_statistics.services.calculators.registry import calculate_test_statistic
+from services.calculators.registry import calculate_test_statistic
 
 
 class DistributionCalculatorTests(SimpleTestCase):

@@ -8,16 +8,19 @@ class TestStatisticsViewTests(SimpleTestCase):
     def inertia_post(self, path: str, data: dict[str, str]):
         return self.client.post(path, data, HTTP_X_INERTIA="true")
 
-    def test_home_page_returns_section_overview(self):
+    def test_home_page_returns_both_section_overviews(self):
         response = self.inertia_get("/")
 
         self.assertEqual(response.status_code, 200)
         payload = response.json()
         self.assertEqual(payload["component"], "Home")
-        self.assertEqual(len(payload["props"]["sections"]), 1)
+        self.assertEqual(len(payload["props"]["sections"]), 2)
         self.assertEqual(payload["props"]["sections"][0]["slug"], "test-statistics")
         self.assertEqual(payload["props"]["sections"][0]["href"], "/test-statistics/")
         self.assertEqual(payload["props"]["sections"][0]["itemCount"], 26)
+        self.assertEqual(payload["props"]["sections"][1]["slug"], "regression")
+        self.assertEqual(payload["props"]["sections"][1]["href"], "/regression/")
+        self.assertEqual(payload["props"]["sections"][1]["itemCount"], 6)
 
     def test_test_statistics_index_returns_exact_26_calculator_catalog(self):
         response = self.inertia_get("/test-statistics/")

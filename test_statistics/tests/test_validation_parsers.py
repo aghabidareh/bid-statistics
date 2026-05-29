@@ -1,7 +1,7 @@
 from django.test import SimpleTestCase
 
-from test_statistics.services.calculators.registry import calculate_test_statistic
-from test_statistics.services.validators import ValidationIssues, errors_by_field
+from services.calculators.registry import calculate_test_statistic
+from services.validators import ValidationIssues, errors_by_field
 
 
 class ValidationParserTests(SimpleTestCase):

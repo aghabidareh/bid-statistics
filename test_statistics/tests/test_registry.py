@@ -1,10 +1,10 @@
 from django.test import SimpleTestCase
 
-from test_statistics.domain.enums import TestFamily
-from test_statistics.domain.metadata import CalculatorMetadata
-from test_statistics.domain.results import CalculationResult
-from test_statistics.services.calculators.base import BaseCalculator, DuplicateCalculatorSlugError, UnknownCalculatorError
-from test_statistics.services.calculators.registry import get_calculator, list_calculators
+from domain.enums import TestFamily
+from domain.metadata import CalculatorMetadata
+from domain.results import CalculationResult
+from services.calculators.base import BaseCalculator, DuplicateCalculatorSlugError, UnknownCalculatorError
+from services.calculators.registry import get_calculator, list_calculators
 
 
 class CalculatorRegistryTests(SimpleTestCase):

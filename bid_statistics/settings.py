@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     "django_vite",
     "inertia",
     "test_statistics.apps.TestStatisticsConfig",
+    "regression.apps.RegressionConfig",
 ]
 
 MIDDLEWARE = [

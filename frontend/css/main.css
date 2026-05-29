@@ -446,6 +446,133 @@ code {
   filter: brightness(1.05);
 }
 
+.regression-form {
+  gap: 1rem;
+}
+
+.regression-form__actions,
+.editable-grid__toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.regression-form__secondary-button,
+.editable-grid__button {
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 0.8rem 1.1rem;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.regression-form__secondary-button:hover,
+.editable-grid__button:hover {
+  border-color: #818cf8;
+  color: #312e81;
+}
+
+.regression-form__file-input {
+  display: none;
+}
+
+.regression-form__source {
+  font-size: 0.92rem;
+  color: #475569;
+}
+
+.editable-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.editable-grid__toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.editable-grid__toolbar-copy {
+  color: #475569;
+  font-size: 0.92rem;
+  max-width: 32rem;
+}
+
+.editable-grid__errors,
+.editable-grid__column-errors,
+.editable-grid__cell-errors {
+  margin-top: 0.25rem;
+}
+
+.editable-grid__scroll {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.editable-grid__table {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+}
+
+.editable-grid__head,
+.editable-grid__cell,
+.editable-grid__index {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.editable-grid__head {
+  background: #f8fafc;
+  text-align: left;
+}
+
+.editable-grid__head--index,
+.editable-grid__index {
+  width: 60px;
+  font-weight: 700;
+  color: #4338ca;
+}
+
+.editable-grid__column-header {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.editable-grid__column-input,
+.editable-grid__role-select,
+.editable-grid__cell-input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  background: #fff;
+  color: #111827;
+  font: inherit;
+}
+
+.editable-grid__column-input:focus,
+.editable-grid__role-select:focus,
+.editable-grid__cell-input:focus {
+  outline: 2px solid #818cf8;
+  outline-offset: 2px;
+  border-color: #818cf8;
+}
+
+.editable-grid__column-input--error,
+.editable-grid__role-select--error,
+.editable-grid__cell-input--error {
+  border-color: #dc2626;
+  background: #fff7f7;
+}
+
 .result-panel__hero-metrics {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 1.5rem;
@@ -513,6 +640,14 @@ code {
   margin-top: 0.75rem;
 }
 
+.result-panel__dataset-role {
+  margin-top: 0.2rem;
+  font-size: 0.78rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .result-panel__message-block--warnings {
   background: #fff7ed;
   color: #9a3412;
@@ -531,6 +666,10 @@ code {
   .result-panel__hero-metrics,
   .home__summary {
     grid-template-columns: 1fr;
+  }
+
+  .editable-grid__toolbar {
+    flex-direction: column;
   }
 
   .home__section,

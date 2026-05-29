@@ -1,24 +1,37 @@
 {
+  "_EditableGrid-DLtxaA8q.js": {
+    "file": "assets/EditableGrid-DLtxaA8q.js",
+    "name": "EditableGrid",
+    "imports": [
+      "js/main.jsx"
+    ]
+  },
   "js/main.jsx": {
-    "file": "assets/app-i-lmbWDq.js",
+    "file": "assets/app-ClzuCwa5.js",
     "name": "app",
     "src": "js/main.jsx",
     "isEntry": true,
     "dynamicImports": [
       "pages/Home.jsx",
+      "pages/Regression/Index.jsx",
+      "pages/Regression/Show.jsx",
       "pages/TestStatistics/Index.jsx",
       "pages/TestStatistics/Show.jsx",
       "pages/components/SiteHeader.jsx",
+      "_EditableGrid-DLtxaA8q.js",
+      "pages/components/regression/RegressionDatasetForm.jsx",
+      "pages/components/regression/RegressionResultPanel.jsx",
+      "pages/components/regression/RegressionTable.jsx",
       "pages/components/test-statistics/CalculatorForm.jsx",
       "pages/components/test-statistics/CalculatorTable.jsx",
       "pages/components/test-statistics/ResultPanel.jsx"
     ],
     "css": [
-      "assets/app-hTuSMhYE.css"
+      "assets/app-DcRYLEmh.css"
     ]
   },
   "pages/Home.jsx": {
-    "file": "assets/Home-pFaVc3z_.js",
+    "file": "assets/Home-C6t_Jjxv.js",
     "name": "Home",
     "src": "pages/Home.jsx",
     "isDynamicEntry": true,
@@ -27,8 +40,31 @@
       "pages/components/SiteHeader.jsx"
     ]
   },
+  "pages/Regression/Index.jsx": {
+    "file": "assets/Index-BY-uTsSa.js",
+    "name": "Index",
+    "src": "pages/Regression/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "js/main.jsx",
+      "pages/components/SiteHeader.jsx",
+      "pages/components/regression/RegressionTable.jsx"
+    ]
+  },
+  "pages/Regression/Show.jsx": {
+    "file": "assets/Show-DIw9l44c.js",
+    "name": "Show",
+    "src": "pages/Regression/Show.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "js/main.jsx",
+      "pages/components/SiteHeader.jsx",
+      "pages/components/regression/RegressionDatasetForm.jsx",
+      "pages/components/regression/RegressionResultPanel.jsx"
+    ]
+  },
   "pages/TestStatistics/Index.jsx": {
-    "file": "assets/Index-BMBzWhZD.js",
+    "file": "assets/Index-B7US7W_J.js",
     "name": "Index",
     "src": "pages/TestStatistics/Index.jsx",
     "isDynamicEntry": true,
@@ -39,7 +75,7 @@
     ]
   },
   "pages/TestStatistics/Show.jsx": {
-    "file": "assets/Show-BWDEbn8s.js",
+    "file": "assets/Show-BzS61hyJ.js",
     "name": "Show",
     "src": "pages/TestStatistics/Show.jsx",
     "isDynamicEntry": true,
@@ -51,7 +87,7 @@
     ]
   },
   "pages/components/SiteHeader.jsx": {
-    "file": "assets/SiteHeader-B7my-xNQ.js",
+    "file": "assets/SiteHeader-XZWK-BU9.js",
     "name": "SiteHeader",
     "src": "pages/components/SiteHeader.jsx",
     "isDynamicEntry": true,
@@ -59,8 +95,36 @@
       "js/main.jsx"
     ]
   },
+  "pages/components/regression/RegressionDatasetForm.jsx": {
+    "file": "assets/RegressionDatasetForm-C-ZtDg0n.js",
+    "name": "RegressionDatasetForm",
+    "src": "pages/components/regression/RegressionDatasetForm.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "js/main.jsx",
+      "_EditableGrid-DLtxaA8q.js"
+    ]
+  },
+  "pages/components/regression/RegressionResultPanel.jsx": {
+    "file": "assets/RegressionResultPanel-DztjvUQe.js",
+    "name": "RegressionResultPanel",
+    "src": "pages/components/regression/RegressionResultPanel.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "js/main.jsx"
+    ]
+  },
+  "pages/components/regression/RegressionTable.jsx": {
+    "file": "assets/RegressionTable-CjX7Fxmb.js",
+    "name": "RegressionTable",
+    "src": "pages/components/regression/RegressionTable.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "js/main.jsx"
+    ]
+  },
   "pages/components/test-statistics/CalculatorForm.jsx": {
-    "file": "assets/CalculatorForm-TFjMjZ_N.js",
+    "file": "assets/CalculatorForm-Ct-yghw6.js",
     "name": "CalculatorForm",
     "src": "pages/components/test-statistics/CalculatorForm.jsx",
     "isDynamicEntry": true,
@@ -69,7 +133,7 @@
     ]
   },
   "pages/components/test-statistics/CalculatorTable.jsx": {
-    "file": "assets/CalculatorTable-BXqL3_JG.js",
+    "file": "assets/CalculatorTable-DuKqeGZ9.js",
     "name": "CalculatorTable",
     "src": "pages/components/test-statistics/CalculatorTable.jsx",
     "isDynamicEntry": true,
@@ -78,7 +142,7 @@
     ]
   },
   "pages/components/test-statistics/ResultPanel.jsx": {
-    "file": "assets/ResultPanel-DeNAc6rJ.js",
+    "file": "assets/ResultPanel-Gh_yZ9LE.js",
     "name": "ResultPanel",
     "src": "pages/components/test-statistics/ResultPanel.jsx",
     "isDynamicEntry": true,
