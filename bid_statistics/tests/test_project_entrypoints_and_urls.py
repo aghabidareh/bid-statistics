@@ -17,16 +17,20 @@ class ProjectViewsAndUrlsTests(SimpleTestCase):
         request = self.factory.get("/")
 
         with (
-            patch("bid_statistics.views.build_section", side_effect=[{"slug": "test-statistics"}, {"slug": "regression"}]) as build_section_mock,
+            patch(
+                "bid_statistics.views.build_section",
+                side_effect=[{"slug": "test-statistics"}, {"slug": "regression"}, {"slug": "statistical-tables"}],
+            ) as build_section_mock,
             patch("bid_statistics.views.render") as render_mock,
         ):
             views.home(request)
 
         build_section_mock.assert_any_call("test-statistics")
         build_section_mock.assert_any_call("regression")
+        build_section_mock.assert_any_call("statistical-tables")
         _, component, props = render_mock.call_args.args
         self.assertEqual(component, "Home")
-        self.assertEqual(props["sections"], [{"slug": "test-statistics"}, {"slug": "regression"}])
+        self.assertEqual(props["sections"], [{"slug": "test-statistics"}, {"slug": "regression"}, {"slug": "statistical-tables"}])
 
     def test_home_post_not_allowed_by_require_get(self):
         response = self.client.post(reverse("home"))

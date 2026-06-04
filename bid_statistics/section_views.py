@@ -11,6 +11,7 @@ from inertia import render
 from services.calculators.base import UnknownCalculatorError
 from services.calculators.registry import calculate_test_statistic, get_calculator_metadata, list_calculators
 from services.validators import ValidationIssues, errors_by_field
+from statistical_tables.tables import list_tables
 
 SECTION_CONFIG = {
     "test-statistics": {
@@ -27,19 +28,26 @@ SECTION_CONFIG = {
         "index_component": "Regression/Index",
         "show_component": "Regression/Show",
     },
+    "statistical-tables": {
+        "name": "Statistical Tables",
+        "description": "Look up standard Z and Student's t distribution probabilities and critical values.",
+        "href": "/statistical-tables/",
+        "index_component": "StatisticalTables/Index",
+        "show_component": "StatisticalTables/Show",
+    },
 }
 
 
 
 def build_section(section_slug: str) -> dict[str, object]:
     config = SECTION_CONFIG[section_slug]
-    catalog = list_calculators(section_slug=section_slug)
+    item_count = len(list_tables()) if section_slug == "statistical-tables" else len(list_calculators(section_slug=section_slug))
     return {
         "slug": section_slug,
         "name": config["name"],
         "description": config["description"],
         "href": config["href"],
-        "itemCount": len(catalog),
+        "itemCount": item_count,
     }
 
 

@@ -1,13 +1,13 @@
 {
-  "_EditableGrid-DLtxaA8q.js": {
-    "file": "assets/EditableGrid-DLtxaA8q.js",
+  "_EditableGrid-CwhPQMrK.js": {
+    "file": "assets/EditableGrid-CwhPQMrK.js",
     "name": "EditableGrid",
     "imports": [
       "js/main.jsx"
     ]
   },
   "js/main.jsx": {
-    "file": "assets/app-ClzuCwa5.js",
+    "file": "assets/app-CyYH1tgv.js",
     "name": "app",
     "src": "js/main.jsx",
     "isEntry": true,
@@ -15,10 +15,12 @@
       "pages/Home.jsx",
       "pages/Regression/Index.jsx",
       "pages/Regression/Show.jsx",
+      "pages/StatisticalTables/Index.jsx",
+      "pages/StatisticalTables/Show.jsx",
       "pages/TestStatistics/Index.jsx",
       "pages/TestStatistics/Show.jsx",
       "pages/components/SiteHeader.jsx",
-      "_EditableGrid-DLtxaA8q.js",
+      "_EditableGrid-CwhPQMrK.js",
       "pages/components/regression/RegressionDatasetForm.jsx",
       "pages/components/regression/RegressionResultPanel.jsx",
       "pages/components/regression/RegressionTable.jsx",
@@ -27,11 +29,11 @@
       "pages/components/test-statistics/ResultPanel.jsx"
     ],
     "css": [
-      "assets/app-DcRYLEmh.css"
+      "assets/app-DdTxTc5V.css"
     ]
   },
   "pages/Home.jsx": {
-    "file": "assets/Home-C6t_Jjxv.js",
+    "file": "assets/Home-CVHetEn9.js",
     "name": "Home",
     "src": "pages/Home.jsx",
     "isDynamicEntry": true,
@@ -41,7 +43,7 @@
     ]
   },
   "pages/Regression/Index.jsx": {
-    "file": "assets/Index-BY-uTsSa.js",
+    "file": "assets/Index-NTiQA5HV.js",
     "name": "Index",
     "src": "pages/Regression/Index.jsx",
     "isDynamicEntry": true,
@@ -52,7 +54,7 @@
     ]
   },
   "pages/Regression/Show.jsx": {
-    "file": "assets/Show-DIw9l44c.js",
+    "file": "assets/Show-FLpjQ8eX.js",
     "name": "Show",
     "src": "pages/Regression/Show.jsx",
     "isDynamicEntry": true,
@@ -63,8 +65,28 @@
       "pages/components/regression/RegressionResultPanel.jsx"
     ]
   },
+  "pages/StatisticalTables/Index.jsx": {
+    "file": "assets/Index-B4qYv9HF.js",
+    "name": "Index",
+    "src": "pages/StatisticalTables/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "js/main.jsx",
+      "pages/components/SiteHeader.jsx"
+    ]
+  },
+  "pages/StatisticalTables/Show.jsx": {
+    "file": "assets/Show-Dw3PrHlJ.js",
+    "name": "Show",
+    "src": "pages/StatisticalTables/Show.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "js/main.jsx",
+      "pages/components/SiteHeader.jsx"
+    ]
+  },
   "pages/TestStatistics/Index.jsx": {
-    "file": "assets/Index-B7US7W_J.js",
+    "file": "assets/Index-BxynOmB_.js",
     "name": "Index",
     "src": "pages/TestStatistics/Index.jsx",
     "isDynamicEntry": true,
@@ -75,7 +97,7 @@
     ]
   },
   "pages/TestStatistics/Show.jsx": {
-    "file": "assets/Show-BzS61hyJ.js",
+    "file": "assets/Show-COUY4ahy.js",
     "name": "Show",
     "src": "pages/TestStatistics/Show.jsx",
     "isDynamicEntry": true,
@@ -87,7 +109,7 @@
     ]
   },
   "pages/components/SiteHeader.jsx": {
-    "file": "assets/SiteHeader-XZWK-BU9.js",
+    "file": "assets/SiteHeader-BoMrMvcs.js",
     "name": "SiteHeader",
     "src": "pages/components/SiteHeader.jsx",
     "isDynamicEntry": true,
@@ -96,17 +118,17 @@
     ]
   },
   "pages/components/regression/RegressionDatasetForm.jsx": {
-    "file": "assets/RegressionDatasetForm-C-ZtDg0n.js",
+    "file": "assets/RegressionDatasetForm-CTwVQV7D.js",
     "name": "RegressionDatasetForm",
     "src": "pages/components/regression/RegressionDatasetForm.jsx",
     "isDynamicEntry": true,
     "imports": [
       "js/main.jsx",
-      "_EditableGrid-DLtxaA8q.js"
+      "_EditableGrid-CwhPQMrK.js"
     ]
   },
   "pages/components/regression/RegressionResultPanel.jsx": {
-    "file": "assets/RegressionResultPanel-DztjvUQe.js",
+    "file": "assets/RegressionResultPanel-CMYmMUL1.js",
     "name": "RegressionResultPanel",
     "src": "pages/components/regression/RegressionResultPanel.jsx",
     "isDynamicEntry": true,
@@ -115,7 +137,7 @@
     ]
   },
   "pages/components/regression/RegressionTable.jsx": {
-    "file": "assets/RegressionTable-CjX7Fxmb.js",
+    "file": "assets/RegressionTable-CUnRSd1r.js",
     "name": "RegressionTable",
     "src": "pages/components/regression/RegressionTable.jsx",
     "isDynamicEntry": true,
@@ -124,7 +146,7 @@
     ]
   },
   "pages/components/test-statistics/CalculatorForm.jsx": {
-    "file": "assets/CalculatorForm-Ct-yghw6.js",
+    "file": "assets/CalculatorForm-DXO_Ksy8.js",
     "name": "CalculatorForm",
     "src": "pages/components/test-statistics/CalculatorForm.jsx",
     "isDynamicEntry": true,
@@ -133,7 +155,7 @@
     ]
   },
   "pages/components/test-statistics/CalculatorTable.jsx": {
-    "file": "assets/CalculatorTable-DuKqeGZ9.js",
+    "file": "assets/CalculatorTable-CErTsfWy.js",
     "name": "CalculatorTable",
     "src": "pages/components/test-statistics/CalculatorTable.jsx",
     "isDynamicEntry": true,
@@ -142,7 +164,7 @@
     ]
   },
   "pages/components/test-statistics/ResultPanel.jsx": {
-    "file": "assets/ResultPanel-Gh_yZ9LE.js",
+    "file": "assets/ResultPanel-DalKQfxu.js",
     "name": "ResultPanel",
     "src": "pages/components/test-statistics/ResultPanel.jsx",
     "isDynamicEntry": true,

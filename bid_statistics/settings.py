@@ -14,6 +14,7 @@ INSTALLED_APPS = [
     "inertia",
     "test_statistics.apps.TestStatisticsConfig",
     "regression.apps.RegressionConfig",
+    "statistical_tables.apps.StatisticalTablesConfig",
 ]
 
 MIDDLEWARE = [

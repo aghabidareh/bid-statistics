@@ -12,9 +12,9 @@ export default function Home({ sections }) {
           <h1 className="home__title">Statistics online</h1>
           <p className="home__intro">
             Browse the available sections of the statistics toolkit. Test
-            statistics keeps the existing 26-calculator workflow, while
-            regression adds spreadsheet-style modeling, prediction rows, and
-            matching tools.
+            statistics keeps the existing 26-calculator workflow, regression
+            adds spreadsheet-style modeling, and statistical tables provide Z
+            and T critical-value lookups.
           </p>
 
           <div className="section-grid">

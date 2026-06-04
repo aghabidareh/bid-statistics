@@ -11,6 +11,6 @@ def home(request: HttpRequest) -> HttpResponse:
         request,
         "Home",
         {
-            "sections": [build_section(section_slug) for section_slug in ("test-statistics", "regression")],
+            "sections": [build_section(section_slug) for section_slug in ("test-statistics", "regression", "statistical-tables")],
         },
     )

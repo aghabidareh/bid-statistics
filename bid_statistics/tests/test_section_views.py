@@ -69,6 +69,15 @@ class SectionViewsTests(SimpleTestCase):
         self.assertEqual(section["slug"], "test-statistics")
         self.assertEqual(section["itemCount"], 3)
 
+    def test_build_section_uses_statistical_tables_catalog_length(self):
+        tables = [SimpleNamespace(), SimpleNamespace()]
+
+        with patch("bid_statistics.section_views.list_tables", return_value=tables):
+            section = section_views.build_section("statistical-tables")
+
+        self.assertEqual(section["slug"], "statistical-tables")
+        self.assertEqual(section["itemCount"], 2)
+
     def test_render_catalog_renders_index_component(self):
         request = self.factory.get("/test-statistics/")
         calculator = SimpleNamespace(to_dict=lambda: {"slug": "calc-1"})

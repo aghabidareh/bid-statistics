@@ -4,6 +4,7 @@ const NAV_ITEMS = [
   { label: "Home", href: "/", key: "/" },
   { label: "Test Statistics", href: "/test-statistics/", key: "/test-statistics" },
   { label: "Regression", href: "/regression/", key: "/regression" },
+  { label: "Statistical Tables", href: "/statistical-tables/", key: "/statistical-tables" },
 ];
 
 export default function SiteHeader({ currentPath = "/" }) {
